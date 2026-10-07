@@ -1,0 +1,1 @@
+<img class="logo-img shadow-lg" src="{{ asset('assets/imgs/logo.png') }}" alt="Prowise" style="height:120px"/>

@@ -1,0 +1,214 @@
+<?php
+
+use Monolog\Handler\NullHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\SyslogUdpHandler;
+use Monolog\Processor\PsrLogMessageProcessor;
+
+return [
+    'api_token' => env('LOGGING_API_TOKEN', 'default-token-if-not-set'),
+    /*
+    |--------------------------------------------------------------------------
+    | Default Log Channel
+    |--------------------------------------------------------------------------
+    |
+    | This option defines the default log channel that is utilized to write
+    | messages to your logs. The value provided here should match one of
+    | the channels present in the list of "channels" configured below.
+    |
+    */
+
+    'default' => env('LOG_CHANNEL', 'stack'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Deprecations Log Channel
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the log channel that should be used to log warnings
+    | regarding deprecated PHP and library features. This allows you to get
+    | your application ready for upcoming major versions of dependencies.
+    |
+    */
+
+    'deprecations' => [
+        'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
+        'trace' => env('LOG_DEPRECATIONS_TRACE', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Log Channels
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure the log channels for your application. Laravel
+    | utilizes the Monolog PHP logging library, which includes a variety
+    | of powerful log handlers and formatters that you're free to use.
+    |
+    | Available drivers: "single", "daily", "slack", "syslog",
+    |                    "errorlog", "monolog", "custom", "stack"
+    |
+    */
+
+    'channels' => [
+
+        'stack' => [
+            'driver' => 'stack',
+            'channels' => explode(',', env('LOG_STACK', 'single')),
+            'ignore_exceptions' => false,
+        ],
+
+        'single' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/laravel.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'replace_placeholders' => true,
+        ],
+        'score_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/score.log'),
+            'level' => env( 'debug'),
+        ],
+        /*----------------------------------------------*/
+        'hopital_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/hopital.log'),
+            'level' => 'info',
+        ],
+        'participant_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/participant.log'),
+            'level' => 'info',
+        ],
+        'user_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/user.log'),
+            'level' => 'info',
+        ],
+        'complication_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/complication.log'),
+            'level' => 'info',
+        ],
+        'poste_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/poste.log'),
+            'level' => 'info',
+        ],
+        'specialite_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/specialite.log'),
+            'level' => 'info',
+        ],
+        'actstaff_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/actstaff.log'),
+            'level' => 'info',
+        ],
+        'motif_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/motif.log'),
+            'level' => 'info',
+        ],
+        'exception_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/exception.log'),
+            'level' => 'info',
+        ],
+        'module_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/module.log'),
+            'level' => 'info',
+        ],
+        'client_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/client.log'),
+            'level' => 'info',
+        ],
+        'catalogue_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/catalogue.log'),
+            'level' => 'info',
+        ],
+        'permission_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/permission.log'),
+            'level' => 'info',
+        ],
+        'profile_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/profile.log'),
+            'level' => 'info',
+        ],
+        'patient_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/patient.log'),
+            'level' => 'info',
+        ],
+        /*----------------------------------------------*/
+
+        'daily' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/laravel.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => env('LOG_DAILY_DAYS', 14),
+            'replace_placeholders' => true,
+        ],
+
+        'slack' => [
+            'driver' => 'slack',
+            'url' => env('LOG_SLACK_WEBHOOK_URL'),
+            'username' => env('LOG_SLACK_USERNAME', 'Laravel Log'),
+            'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
+            'level' => env('LOG_LEVEL', 'critical'),
+            'replace_placeholders' => true,
+        ],
+
+        'papertrail' => [
+            'driver' => 'monolog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'handler' => env('LOG_PAPERTRAIL_HANDLER', SyslogUdpHandler::class),
+            'handler_with' => [
+                'host' => env('PAPERTRAIL_URL'),
+                'port' => env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+            ],
+            'processors' => [PsrLogMessageProcessor::class],
+        ],
+
+        'stderr' => [
+            'driver' => 'monolog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'handler' => StreamHandler::class,
+            'formatter' => env('LOG_STDERR_FORMATTER'),
+            'with' => [
+                'stream' => 'php://stderr',
+            ],
+            'processors' => [PsrLogMessageProcessor::class],
+        ],
+
+        'syslog' => [
+            'driver' => 'syslog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'facility' => env('LOG_SYSLOG_FACILITY', LOG_USER),
+            'replace_placeholders' => true,
+        ],
+
+        'errorlog' => [
+            'driver' => 'errorlog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'replace_placeholders' => true,
+        ],
+
+        'null' => [
+            'driver' => 'monolog',
+            'handler' => NullHandler::class,
+        ],
+
+        'emergency' => [
+            'path' => storage_path('logs/laravel.log'),
+        ],
+
+    ],
+
+];

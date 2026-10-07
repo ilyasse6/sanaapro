@@ -1,0 +1,12 @@
+@extends('user.master')
+@section('content')
+<div class="section" style="max-width:700px"><h1 class="pagetitle">Nouvel article</h1>
+<div class="card card-body"><form method="post" action="{{ route('stock.articles.store') }}">@csrf
+    <div class="row g-2 mb-2"><div class="col-md-4"><label class="form-label">Référence *</label><input name="reference" class="form-control" required value="{{ old('reference') }}"></div><div class="col-md-8"><label class="form-label">Nom *</label><input name="nom" class="form-control" required value="{{ old('nom') }}"></div></div>
+    <div class="mb-2"><label class="form-label">Description</label><textarea name="description" class="form-control">{{ old('description') }}</textarea></div>
+    <div class="row g-2 mb-2"><div class="col"><label class="form-label">Unité</label><input name="unite" class="form-control" value="{{ old('unite','pièce') }}"></div><div class="col"><label class="form-label">Stock initial</label><input type="number" step="0.001" name="stock_quantity" class="form-control" value="{{ old('stock_quantity',0) }}"></div><div class="col"><label class="form-label">Seuil alerte</label><input type="number" step="0.001" name="seuil_alerte" class="form-control" value="{{ old('seuil_alerte',0) }}"></div></div>
+    <div class="row g-2 mb-2"><div class="col"><label class="form-label">PA HT</label><input type="number" step="0.01" name="prix_achat_ht" class="form-control" value="{{ old('prix_achat_ht',0) }}"></div><div class="col"><label class="form-label">PV HT</label><input type="number" step="0.01" name="prix_vente_ht" class="form-control" value="{{ old('prix_vente_ht',0) }}"></div></div>
+    <div class="row g-2 mb-3"><div class="col"><label class="form-label">Fournisseur</label><select name="fournisseur_id" class="form-select"><option value="">—</option>@foreach($fournisseurs as $f)<option value="{{ $f->id }}" @selected(old('fournisseur_id')==$f->id)>{{ $f->raison_sociale }}</option>@endforeach</select></div><div class="col"><label class="form-label">Lier catalogue service</label><select name="catalogue_service_id" class="form-select"><option value="">—</option>@foreach($services as $s)<option value="{{ $s->id }}" @selected(old('catalogue_service_id')==$s->id)>{{ $s->nom }}</option>@endforeach</select></div></div>
+    <button class="btn btn-primary">Créer</button><a href="{{ route('stock.articles') }}" class="btn btn-outline-secondary">Retour</a>
+</form></div></div>
+@endsection
