@@ -26,6 +26,29 @@ class UserController extends Controller
         return preg_replace('/\D/', '', (string) $value);
     }
 
+    private function reglesUsername(?int $ignoreId = null): array
+    {
+        return [
+            'required',
+            'string',
+            'min:3',
+            'max:50',
+            'regex:/^[A-Za-z0-9._-]+$/',
+            Rule::unique('users', 'username')->ignore($ignoreId),
+        ];
+    }
+
+    private function messagesUsername(): array
+    {
+        return [
+            'username.required' => 'Le nom d\'utilisateur est obligatoire.',
+            'username.min' => 'Le nom d\'utilisateur doit contenir au moins 3 caractères.',
+            'username.max' => 'Le nom d\'utilisateur ne doit pas dépasser 50 caractères.',
+            'username.regex' => 'Le nom d\'utilisateur ne peut contenir que des lettres, chiffres, points, tirets et underscores (sans espace).',
+            'username.unique' => 'Ce nom d\'utilisateur est déjà utilisé.',
+        ];
+    }
+
     /**
      * Récupérer les profils autorisés pour l'utilisateur connecté
      */
@@ -376,12 +399,14 @@ class UserController extends Controller
 
             $request->merge([
                 'telephone' => $this->digitsOnlyPhone($request->input('telephone')),
+                'username' => trim((string) $request->input('username')),
             ]);
 
             // Validation globale
             $validator = Validator::make($request->all(), [
                 'nom' => 'required|string|max:255',
                 'prenom' => 'required|string|max:255',
+                'username' => $this->reglesUsername(),
                 'email' => 'required|string|email|max:255|unique:users',
                 'telephone' => ['required', 'regex:/^0[67]\d{8}$/'],
                 'id_entreprise' => 'nullable|exists:entreprises,id',
@@ -392,7 +417,7 @@ class UserController extends Controller
             ], [
                 'telephone.required' => 'Le téléphone est obligatoire.',
                 'telephone.regex' => 'Le téléphone doit comporter 10 chiffres et commencer par 06 ou 07.',
-            ]);
+            ] + $this->messagesUsername());
 
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
@@ -403,6 +428,7 @@ class UserController extends Controller
                 $newUser = User::create([
                     'nom' => $request->nom,
                     'prenom' => $request->prenom,
+                    'username' => $request->username,
                     'email' => $request->email,
                     'telephone' => $request->telephone,
                     'id_entreprise' => $request->id_entreprise,
@@ -484,17 +510,19 @@ class UserController extends Controller
                     ->with('failed_modal', 'EditModal-'.$id);
             }
 
-            DB::transaction(function () use ($request, $id) {
+            $echecValidation = DB::transaction(function () use ($request, $id) {
                 $userToUpdate = User::findOrFail($id);
 
                 $telDigits = $this->digitsOnlyPhone($request->input('telephone'));
                 $request->merge([
                     'telephone' => $telDigits === '' ? null : $telDigits,
+                    'username' => trim((string) $request->input('username')),
                 ]);
 
                 $validator = Validator::make($request->all(), [
                     'nom' => 'required|string|max:255',
                     'prenom' => 'required|string|max:255',
+                    'username' => $this->reglesUsername($userToUpdate->id),
                     'email' => [
                         'required',
                         'string',
@@ -510,7 +538,7 @@ class UserController extends Controller
                     'password' => ['nullable', 'confirmed', Password::min(8)],
                 ], [
                     'telephone.regex' => 'Le téléphone doit comporter 10 chiffres et commencer par 06 ou 07.',
-                ]);
+                ] + $this->messagesUsername());
 
                 if ($validator->fails()) {
                     return redirect()->back()->withErrors($validator)->withInput()
@@ -521,6 +549,7 @@ class UserController extends Controller
                 $updateData = [
                     'nom' => $request->nom,
                     'prenom' => $request->prenom,
+                    'username' => $request->username,
                     'email' => $request->email,
                     'telephone' => $request->telephone,
                     'id_entreprise' => $request->id_entreprise,
@@ -554,7 +583,13 @@ class UserController extends Controller
                     '👥 Profils assignés' => $request->profiles,
                 ]);
                 Log::channel('user_log')->info(str_repeat('*', 100));
+
+                return null;
             });
+
+            if ($echecValidation) {
+                return $echecValidation;
+            }
 
             return redirect()->route('utilisateurs.index')->with('success', 'Utilisateur modifié avec succès.');
 

@@ -1,6 +1,7 @@
 function filterTableUtilisateur() {
     const nom = document.getElementById('searchNom').value.toLowerCase();
     const prenom = document.getElementById('searchPrenom').value.toLowerCase();
+    const username = (document.getElementById('searchUsername')?.value || '').toLowerCase();
     const etablissement = document.getElementById('searchEtablissement').value.toLowerCase();
     const poste = document.getElementById('searchPoste').value.toLowerCase();
     const profile = document.getElementById('searchProfile').value.toLowerCase();
@@ -9,17 +10,19 @@ function filterTableUtilisateur() {
         // Utiliser les attributs data au lieu du texte affiché
         const rowNom = row.getAttribute('data-nom').toLowerCase();
         const rowPrenom = row.getAttribute('data-prenom').toLowerCase();
+        const rowUsername = (row.getAttribute('data-username') || '').toLowerCase();
         const rowEtablissement = row.getAttribute('data-etablissement').toLowerCase();
         const rowPoste = row.getAttribute('data-poste').toLowerCase();
         const rowProfile = row.getAttribute('data-profile').toLowerCase();
 
         const matchNom = rowNom.includes(nom);
         const matchPrenom = rowPrenom.includes(prenom);
+        const matchUsername = rowUsername.includes(username);
         const matchEtablissement = etablissement === '' || rowEtablissement.includes(etablissement);
         const matchPoste = poste === '' || rowPoste.includes(poste);
         const matchProfile = profile === '' || rowProfile.includes(profile);
 
-        row.style.display = (matchNom && matchPrenom && matchEtablissement && matchPoste && matchProfile) ?
+        row.style.display = (matchNom && matchPrenom && matchUsername && matchEtablissement && matchPoste && matchProfile) ?
             '' : 'none';
     });
 }
@@ -27,6 +30,8 @@ function filterTableUtilisateur() {
 function clearFiltersUtilisateurs() {
     document.getElementById('searchNom').value = '';
     document.getElementById('searchPrenom').value = '';
+    const searchUsername = document.getElementById('searchUsername');
+    if (searchUsername) searchUsername.value = '';
     document.getElementById('searchEtablissement').value = '';
     document.getElementById('searchPoste').value = '';
     document.getElementById('searchProfile').value = '';
@@ -48,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     filterTableUtilisateur();
     document.getElementById('searchNom').addEventListener('input', filterTableUtilisateur);
     document.getElementById('searchPrenom').addEventListener('input', filterTableUtilisateur);
+    document.getElementById('searchUsername')?.addEventListener('input', filterTableUtilisateur);
     document.getElementById('searchEtablissement').addEventListener('change', filterTableUtilisateur);
     document.getElementById('searchPoste').addEventListener('change', filterTableUtilisateur);
     document.getElementById('searchProfile').addEventListener('change', filterTableUtilisateur);

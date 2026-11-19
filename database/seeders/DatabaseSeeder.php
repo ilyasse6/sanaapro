@@ -18,8 +18,9 @@ class DatabaseSeeder extends Seeder
             ModuleSeeder::class,
             ProfileSeeder::class,
             PermissionSeeder::class,
-            ProwiseModulesPermissionsSeeder::class,
+            SanaaModulesPermissionsSeeder::class,
             ProfilePermissionSeeder::class,
+            CreditChequePermissionSeeder::class,
         ]);
 
         $firstEid = (int) \App\Models\Entreprise::query()->orderBy('id')->value('id');

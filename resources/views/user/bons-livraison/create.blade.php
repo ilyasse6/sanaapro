@@ -5,7 +5,7 @@
     if (!is_array($lignesOld) || count($lignesOld) === 0) {
         $lignesOld = [['reference_produit' => '', 'designation' => '', 'quantite' => '1', 'unite' => 'pièce']];
     }
-    $numeroPreviewBl = 'BL-'.date('Y-m').'-…';
+    $numeroPreviewBl = \App\Models\BonLivraison::genererNumero();
 @endphp
 @include('user.bons-livraison.partials.live-preview-styles')
 <style>
@@ -29,7 +29,7 @@
     <form action="{{ route('bons-livraison.store') }}" method="post" id="form-bl">
         @csrf
         <div class="row g-4 align-items-start">
-            <div class="col-lg-8">
+            <div class="col-lg-7">
                 <div class="card bl-card mb-4">
                     <div class="card-body">
                         <h6 class="text-primary mb-3"><i class="bi bi-info-circle me-1"></i>En-tête</h6>
@@ -135,7 +135,7 @@
     </form>
 </div>
 @push('scripts')
-@include('user.bons-livraison.partials.live-preview-script')
+@include('user.bons-livraison.partials.live-preview-script', ['numeroPreview' => $numeroPreviewBl])
 <script>
 (function () {
     const tbody = document.getElementById('bl-lignes-tbody');

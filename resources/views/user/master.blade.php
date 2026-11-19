@@ -5,14 +5,14 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Prowise — Gestion d'équipements</title>
+    <title>{{ config('app.name', 'SanaaPro') }} — Gestion d'entreprise</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="app-url" content="{{ url('/') }}">
     <!-- Favicons -->
-    <link href="{{ asset('assets/imgs/logo.png') }}" rel="icon" type="image/png">
-    <link href="{{ asset('assets/imgs/logo.png') }}" rel="apple-touch-icon">
+    <link href="{{ asset('assets/imgs/afifalu-logo.png') }}" rel="icon" type="image/png">
+    <link href="{{ asset('assets/imgs/afifalu-logo.png') }}" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -510,6 +510,32 @@
                                 class="{{ request()->routeIs('factures.index_desactives') ? 'active' : '' }}">
                                 <i class="bi bi-circle"></i>
                                 <span>Factures désactivées</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+            @if (auth()->user()->hasPermission('Gestion des Crédits & Chèques', 'consulter'))
+                <li class="nav-item">
+                    <a class="nav-link {{ Route::is('credits.*', 'cheques.*') ? 'active' : 'collapsed' }}"
+                        data-bs-target="#credits-nav" data-bs-toggle="collapse" href="#" id="nav-credits">
+                        <i class="bi bi-wallet2"></i>
+                        <span>Crédits & Chèques</span>
+                        <i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="credits-nav"
+                        class="nav-content collapse {{ Route::is('credits.*', 'cheques.*') ? 'show' : '' }}"
+                        data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a href="{{ route('credits.index') }}" class="{{ request()->routeIs('credits.*') ? 'active' : '' }}">
+                                <i class="bi bi-circle"></i>
+                                <span>Crédits clients</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('cheques.index') }}" class="{{ request()->routeIs('cheques.*') ? 'active' : '' }}">
+                                <i class="bi bi-circle"></i>
+                                <span>Suivi des chèques</span>
                             </a>
                         </li>
                     </ul>

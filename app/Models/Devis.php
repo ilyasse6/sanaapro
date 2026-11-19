@@ -30,6 +30,7 @@ class Devis extends Model
         'conditions_paiement',
         'notes',
         'objet',
+        'titre_lignes',
         'branding_snapshot',
         'actif',
         'user_insert',

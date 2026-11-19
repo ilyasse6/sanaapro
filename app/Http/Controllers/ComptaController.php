@@ -7,6 +7,7 @@ use App\Models\ComptaMouvement;
 use App\Models\Employe;
 use App\Models\Facture;
 use App\Models\Fournisseur;
+use App\Support\CreditsClients;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -88,13 +89,10 @@ class ComptaController extends Controller
             return redirect()->back()->withErrors($v)->withInput();
         }
 
-        ComptaMouvement::create([...$v->validated(), 'user_insert' => Auth::id()]);
+        $mouvement = ComptaMouvement::create([...$v->validated(), 'user_insert' => Auth::id()]);
 
-        if ($request->type === 'paiement_client' && $request->filled('facture_id')) {
-            $facture = Facture::find($request->facture_id);
-            if ($facture && in_array($facture->statut, ['emise', 'envoyee', 'payee_partielle'], true)) {
-                $facture->update(['statut' => 'payee', 'user_update' => Auth::id()]);
-            }
+        if ($mouvement->type === 'paiement_client') {
+            CreditsClients::recalculerStatutFacture($mouvement->facture, Auth::id());
         }
 
         return redirect()->route('compta.mouvements')->with('success', 'Écriture enregistrée.');

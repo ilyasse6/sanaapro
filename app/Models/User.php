@@ -23,6 +23,7 @@ class User extends Authenticatable
     protected $fillable = [
         'nom',
         'prenom',
+        'username',
         'email',
         'gmail',
         'telephone',
@@ -316,7 +317,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Résout un identifiant de connexion : e-mail complet, Gmail secondaire, ou partie locale (identifiant avant @).
+     * Résout un identifiant de connexion : e-mail complet, Gmail secondaire, nom d'utilisateur, ou partie locale (identifiant avant @).
      *
      * @throws ValidationException
      */
@@ -355,6 +356,12 @@ class User extends Authenticatable
         }
 
         $local = strtolower($login);
+
+        $byUsername = static::query()->whereRaw('LOWER(username) = ?', [$local])->first();
+        if ($byUsername) {
+            return $byUsername->email;
+        }
+
         $fromEmail = static::query()
             ->whereRaw('LOWER(email) LIKE ?', [$local.'@%'])
             ->pluck('email');

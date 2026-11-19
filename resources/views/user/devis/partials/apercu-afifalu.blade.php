@@ -45,6 +45,7 @@
     .apx-td-type img { max-width: 62%; max-height: 54px; object-fit: contain; display: inline-block; }
     .apx-td-num { position: absolute; left: 4px; bottom: 1px; font-weight: 700; font-size: 10px; }
     .apx-td-desig { font-style: italic; line-height: 1.35; }
+    .apx-page .apx-td-titre { font-weight: 700; text-align: center; }
     .apx-td-qte { font-weight: 700; font-style: italic; vertical-align: middle !important; text-align: center; }
     .apx-td-money { text-align: right; white-space: nowrap; }
     .apx-row-spacer td { height: 24px; }
@@ -114,7 +115,7 @@
                     </thead>
                     <tbody id="apxLignes"></tbody>
                     <tbody>
-                        <tr class="apx-row-spacer"><td colspan="2"></td><td colspan="2"></td><td colspan="3"></td></tr>
+                        <tr class="apx-row-spacer"><td colspan="2"></td><td colspan="2"></td><td class="apx-td-qte" id="apxTotalQte"></td><td colspan="2"></td></tr>
                         <tr class="apx-row-total">
                             <td colspan="2" class="apx-total-label">MONTANT TOTAL HT</td>
                             <td colspan="2"></td>
@@ -174,16 +175,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const rows = container.querySelectorAll('.ligne-devis');
         const tbody = document.getElementById('apxLignes');
+        const titre = ((form.querySelector('[name="titre_lignes"]') || {}).value || '').trim();
+        const ligneTitre = titre
+            ? `<tr><td class="apx-td-type"></td><td class="apx-td-desig apx-td-titre">${esc(titre).replace(/\n/g, '<br>')}</td><td></td><td></td><td></td><td></td><td></td></tr>`
+            : '';
         let totalLignes = 0;
+        let totalQte = 0;
         if (!rows.length) {
-            tbody.innerHTML = '<tr><td colspan="7" class="apx-empty">Aucune ligne</td></tr>';
+            tbody.innerHTML = ligneTitre + '<tr><td colspan="7" class="apx-empty">Aucune ligne</td></tr>';
         } else {
-            tbody.innerHTML = Array.from(rows).map((row, i) => {
+            tbody.innerHTML = ligneTitre + Array.from(rows).map((row, i) => {
                 const q = num(val(row, '.ligne-quantite'));
                 const pu = num(val(row, '.ligne-pu'));
                 const remise = num(val(row, '.ligne-remise'));
                 const montant = q * pu * (1 - remise / 100);
                 totalLignes += montant;
+                totalQte += q;
                 const serviceId = val(row, 'input[name$="[catalogue_service_id]"]');
                 const img = serviceId && images[serviceId] ? `<img src="${esc(images[serviceId])}" alt="">` : '';
                 const desig = val(row, '.ligne-designation').trim();
@@ -198,6 +205,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 </tr>`;
             }).join('');
         }
+
+        totalQte = Math.round(totalQte * 1000) / 1000;
+        document.getElementById('apxTotalQte').textContent = totalQte ? qte(totalQte) : '';
 
         const remiseGlobale = num((document.getElementById('remise_globale_pct') || {}).value);
         const tauxInput = document.getElementById('taux_tva');

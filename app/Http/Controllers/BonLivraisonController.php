@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppSetting;
 use App\Models\BonLivraison;
 use App\Models\BonLivraisonLigne;
 use App\Models\Client;
@@ -91,7 +92,9 @@ class BonLivraisonController extends Controller
             }
         }
 
-        return view('user.bons-livraison.create', compact('clients', 'preselectedClientId'));
+        $societe = SocieteBranding::all(AppSetting::resolvedEntrepriseId());
+
+        return view('user.bons-livraison.create', compact('clients', 'preselectedClientId', 'societe'));
     }
 
     public function store(Request $request)
@@ -197,15 +200,14 @@ class BonLivraisonController extends Controller
 
         $bonLivraison->load(['client', 'lignes']);
         $societe = $bonLivraison->branding_affiche;
-        $logo_src_for_pdf = SocieteBranding::logoSrcForDomPdf($societe);
-        $logo_img_pdf_dims = SocieteBranding::logoDisplayDimensionsForPdf($societe);
+        [$logo_src_for_pdf, $logo_img_pdf_dims] = SocieteBranding::logoPourPdfAvecDefaut($societe, 140, 80);
 
         $pdf = Pdf::loadView('user.bons-livraison.pdf', compact(
             'bonLivraison',
             'societe',
             'logo_src_for_pdf',
             'logo_img_pdf_dims'
-        ));
+        ))->setPaper('a4');
 
         return $pdf->stream('bl-'.$bonLivraison->numero.'.pdf');
     }
@@ -225,8 +227,9 @@ class BonLivraisonController extends Controller
 
         $bonLivraison->load(['client', 'lignes']);
         $clients = Client::where('actif', 1)->orderBy('nom')->get();
+        $societe = $bonLivraison->branding_affiche;
 
-        return view('user.bons-livraison.edit', compact('bonLivraison', 'clients'));
+        return view('user.bons-livraison.edit', compact('bonLivraison', 'clients', 'societe'));
     }
 
     public function update(Request $request, BonLivraison $bonLivraison)

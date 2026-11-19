@@ -1,10 +1,10 @@
-{{-- Styles partagés Marchés (thème Prowise) --}}
+{{-- Styles partagés Marchés (thème SanaaPro) --}}
 <style>
     :root {
-        --prowise-blue: #17324D;
-        --prowise-blue-dark: #0f2438;
-        --prowise-gold: #198754;
-        --prowise-gold-dark: #146c43;
+        --sanaa-blue: #17324D;
+        --sanaa-blue-dark: #0f2438;
+        --sanaa-gold: #198754;
+        --sanaa-gold-dark: #146c43;
         --marche-gradient: linear-gradient(135deg, #17324D 0%, #0f2438 55%, #198754 140%);
         --marche-shadow: 0 10px 40px rgba(30, 64, 175, 0.08);
         --marche-shadow-hover: 0 16px 48px rgba(30, 64, 175, 0.12);
@@ -66,13 +66,13 @@
     .card-marche-title {
         font-size: 1.05rem;
         font-weight: 700;
-        color: var(--prowise-blue-dark);
+        color: var(--sanaa-blue-dark);
         margin-bottom: 1rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
     }
-    .card-marche-title i { color: var(--prowise-gold-dark); }
+    .card-marche-title i { color: var(--sanaa-gold-dark); }
     .table-marche { margin: 0; }
     .table-marche thead {
         background: linear-gradient(135deg, #17324D 0%, #0f2438 100%);
@@ -117,7 +117,7 @@
     .marche-fieldset legend {
         font-size: 0.95rem !important;
         font-weight: 700 !important;
-        color: var(--prowise-blue-dark) !important;
+        color: var(--sanaa-blue-dark) !important;
         float: none;
         width: auto;
         padding: 0 0.5rem;

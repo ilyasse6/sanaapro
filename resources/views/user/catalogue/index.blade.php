@@ -2,7 +2,7 @@
 
 @section('content')
 <style>
-    :root { --prowise-blue: #17324D; --prowise-blue-dark: #0f2438; --prowise-gold: #198754; }
+    :root { --sanaa-blue: #17324D; --sanaa-blue-dark: #0f2438; --sanaa-gold: #198754; }
     .catalogue-hero { background: linear-gradient(135deg, #17324D 0%, #1e4060 55%, #198754 100%); color: #fff; border-radius: 20px; padding: 2rem; margin-bottom: 2rem; }
     .catalogue-hero h1 { margin-bottom: 0.35rem; color: #fff; font-weight: 700; }
     .catalogue-hero p { color: rgba(255, 255, 255, .88); }
@@ -17,6 +17,29 @@
     .modern-input:focus { border-color: #17324D; box-shadow: 0 0 0 3px rgba(30,64,175,0.1); outline: none; }
     .catalogue-thumb { width: 64px; height: 64px; object-fit: contain; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 4px; }
     .catalogue-thumb-empty { width: 64px; height: 64px; display: inline-flex; align-items: center; justify-content: center; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; color: #94a3b8; }
+
+    .cat-picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; max-height: 300px; overflow-y: auto; padding: 4px; }
+    .cat-picker-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px; background: #fff; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+    .cat-picker-item:hover { border-color: #94a3b8; }
+    .cat-picker-item img { width: 100%; height: 78px; object-fit: contain; }
+    .cat-picker-item span { font-size: .68rem; line-height: 1.15; color: #475569; text-align: center; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .cat-picker-item.is-selected { border-color: #198754; box-shadow: 0 0 0 3px rgba(25,135,84,.18); }
+    .cat-picker-none i { font-size: 1.8rem; color: #94a3b8; height: 78px; display: flex; align-items: center; }
+    .cat-picker-upload { display: flex; align-items: center; gap: 10px; }
+    .cat-picker-preview { width: 56px; height: 56px; object-fit: contain; border: 2px solid #198754; border-radius: 10px; padding: 2px; background: #fff; }
+
+    .cat-services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; max-height: 340px; overflow-y: auto; padding: 4px; }
+    .cat-choice { position: relative; margin: 0; cursor: pointer; }
+    .cat-choice input { position: absolute; opacity: 0; pointer-events: none; }
+    .cat-choice-body { display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; padding: 8px; background: #fff; border: 2px solid #e2e8f0; border-radius: 12px; transition: border-color .15s, box-shadow .15s; }
+    .cat-choice:hover .cat-choice-body { border-color: #94a3b8; }
+    .cat-choice input:checked + .cat-choice-body { border-color: #198754; box-shadow: 0 0 0 3px rgba(25,135,84,.18); background: #f0fdf4; }
+    .cat-choice-body img, .cat-choice-noimg { width: 100%; height: 90px; object-fit: contain; }
+    .cat-choice-noimg { display: flex; align-items: center; justify-content: center; color: #cbd5e1; font-size: 2rem; }
+    .cat-choice-nom { font-size: .75rem; font-weight: 600; text-align: center; line-height: 1.2; color: #1e293b; }
+    .cat-choice-prix { font-size: .72rem; color: #198754; font-weight: 600; }
+    .cat-choice-check { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 50%; background: #e2e8f0; color: transparent; display: flex; align-items: center; justify-content: center; font-size: .8rem; }
+    .cat-choice input:checked + .cat-choice-body .cat-choice-check { background: #198754; color: #fff; }
 </style>
 
 <div class="section">
@@ -226,6 +249,15 @@
 
 @include('user.catalogue.modals.add-service')
 @include('user.catalogue.modals.add-pack', ['services' => $services])
+
+<template id="catGalerieModele">
+    @foreach($galerie as $img => $titre)
+        <button type="button" class="cat-picker-item" data-image="{{ $img }}" title="{{ $titre }}">
+            <img src="{{ asset($img) }}" alt="{{ $titre }}" loading="lazy">
+            <span>{{ $titre }}</span>
+        </button>
+    @endforeach
+</template>
 @endsection
 
 @push('scripts')
@@ -235,6 +267,81 @@ document.addEventListener('DOMContentLoaded', function() {
     if (tab === 'packs') {
         document.getElementById('tab-packs').click();
     }
+    var modeleGalerie = document.getElementById('catGalerieModele');
+
+    document.querySelectorAll('.cat-picker').forEach(function (picker) {
+        var grille = picker.querySelector('.cat-picker-grid');
+        var valeur = picker.querySelector('.cat-picker-value');
+        var label = picker.querySelector('.cat-picker-label');
+        var fichier = picker.querySelector('.cat-picker-file');
+        var apercu = picker.querySelector('.cat-picker-preview');
+        var nomFichier = picker.querySelector('.cat-picker-filename');
+
+        function selectionner(item) {
+            grille.querySelectorAll('.cat-picker-item').forEach(function (i) { i.classList.toggle('is-selected', i === item); });
+            valeur.value = item ? item.dataset.image : '';
+            label.textContent = item && item.dataset.image ? item.title : 'Aucune image';
+        }
+
+        function remplir() {
+            if (grille.dataset.rempli) { return; }
+            grille.dataset.rempli = '1';
+            var dejaPresentes = Array.prototype.map.call(grille.querySelectorAll('.cat-picker-item'), function (i) { return i.dataset.image; });
+            modeleGalerie.content.querySelectorAll('.cat-picker-item').forEach(function (modele) {
+                if (dejaPresentes.indexOf(modele.dataset.image) !== -1) { return; }
+                var item = modele.cloneNode(true);
+                item.classList.toggle('is-selected', item.dataset.image === valeur.value);
+                grille.appendChild(item);
+            });
+        }
+
+        grille.addEventListener('click', function (e) {
+            var item = e.target.closest('.cat-picker-item');
+            if (!item) { return; }
+            fichier.value = '';
+            apercu.classList.add('d-none');
+            nomFichier.textContent = '';
+            selectionner(item);
+        });
+
+        var modal = picker.closest('.modal');
+        if (modal) {
+            modal.addEventListener('show.bs.modal', remplir);
+        } else {
+            remplir();
+        }
+
+        fichier.addEventListener('change', function () {
+            var f = fichier.files[0];
+            if (!f) { return; }
+            selectionner(null);
+            apercu.src = URL.createObjectURL(f);
+            apercu.classList.remove('d-none');
+            nomFichier.textContent = f.name;
+            label.textContent = 'Nouvelle image';
+        });
+    });
+
+    document.querySelectorAll('.cat-services').forEach(function (bloc) {
+        var compteur = bloc.querySelector('.cat-services-count');
+        var cases = bloc.querySelectorAll('input[type="checkbox"]');
+        function compter() {
+            var n = Array.prototype.filter.call(cases, function (c) { return c.checked; }).length;
+            compteur.textContent = n ? '(' + n + ' sélectionnée' + (n > 1 ? 's' : '') + ')' : '';
+        }
+        cases.forEach(function (c) { c.addEventListener('change', compter); });
+        compter();
+        bloc.querySelector('.cat-services-search').addEventListener('input', function () {
+            var q = this.value.trim().toLowerCase();
+            bloc.querySelectorAll('.cat-choice').forEach(function (choix) {
+                choix.classList.toggle('d-none', q !== '' && choix.dataset.nom.indexOf(q) === -1);
+            });
+        });
+    });
+
+    @if($errors->any() && session('tab') === 'prestations' && ! old('_method'))
+        new bootstrap.Modal(document.getElementById('modalAddService')).show();
+    @endif
 });
 </script>
 @endpush

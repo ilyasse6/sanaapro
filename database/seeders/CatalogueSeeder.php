@@ -9,7 +9,7 @@ use App\Models\Pack;
 class CatalogueSeeder extends Seeder
 {
     /**
-     * Catalogue commercial Prowise : prestations / produits (équipements médicaux, cuisine, bureautique) et packs.
+     * Catalogue commercial SanaaPro : prestations / produits (équipements médicaux, cuisine, bureautique) et packs.
      */
     public function run(): void
     {

@@ -589,11 +589,11 @@ class DashboardAgenda
     private static function modePaiementColor(string $mode): string
     {
         return match ($mode) {
-            'virement' => 'var(--prowise-blue)',
-            'carte' => 'var(--prowise-gold-dark)',
-            'especes' => 'var(--prowise-gold)',
-            'cheque' => 'var(--prowise-blue-light)',
-            default => 'var(--prowise-blue-dark)',
+            'virement' => 'var(--sanaa-blue)',
+            'carte' => 'var(--sanaa-gold-dark)',
+            'especes' => 'var(--sanaa-gold)',
+            'cheque' => 'var(--sanaa-blue-light)',
+            default => 'var(--sanaa-blue-dark)',
         };
     }
 

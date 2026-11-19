@@ -42,7 +42,7 @@
                 <tbody>
                     @forelse($marches as $m)
                         <tr>
-                            <td class="fw-semibold text-nowrap" style="color: var(--prowise-blue-dark);">{{ $m->reference }}</td>
+                            <td class="fw-semibold text-nowrap" style="color: var(--sanaa-blue-dark);">{{ $m->reference }}</td>
                             <td>
                                 <span class="marche-intitule-cell" title="{{ e($m->intitule) }}">{{ $m->intitule }}</span>
                             </td>

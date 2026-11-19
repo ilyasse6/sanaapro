@@ -1,11 +1,11 @@
 <div class="modal fade" id="modalEditService-{{ $service->id }}" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header bg-catalogue">
                 <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Modifier la prestation</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form action="{{ route('catalogue.update.service', $service->id) }}" method="post">
+            <form action="{{ route('catalogue.update.service', $service->id) }}" method="post" enctype="multipart/form-data" class="d-flex flex-column overflow-hidden">
                 @csrf
                 @method('PUT')
                 <div class="modal-body">
@@ -26,6 +26,9 @@
                             <label class="form-label">Réduction (%)</label>
                             <input type="number" name="reduction" class="form-control modern-input" min="0" max="100" step="0.01" value="{{ old('reduction', $service->reduction) }}">
                         </div>
+                    </div>
+                    <div class="mt-3">
+                        @include('user.catalogue.partials.image-picker', ['actuelle' => $service->image])
                     </div>
                 </div>
                 <div class="modal-footer">

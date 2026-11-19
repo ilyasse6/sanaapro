@@ -52,6 +52,28 @@
                                             class="validation-feedback text-danger mt-1"></div>
                                     </div>
                                 </div>
+                                <!-- Nom d'utilisateur -->
+                                @php $editEchoue = session('failed_modal') === 'EditModal-'.$utilisateur->id; @endphp
+                                <div class="col-xl-4 col-md-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="edit_username_{{ $utilisateur->id }}" class="form-label">
+                                            <i class="bi bi-person-badge me-1"></i>
+                                            Nom d'utilisateur :
+                                        </label>
+                                        <input type="text" class="form-control custom-input @if ($editEchoue && $errors->has('username')) is-invalid @endif"
+                                            id="edit_username_{{ $utilisateur->id }}" name="username"
+                                            value="{{ $editEchoue ? old('username', $utilisateur->username) : $utilisateur->username }}"
+                                            placeholder="Ex : admin" required minlength="3" maxlength="50"
+                                            pattern="[A-Za-z0-9._\-]+" autocomplete="off"
+                                            title="Lettres, chiffres, points, tirets et underscores, sans espace">
+                                        <small class="text-muted">Utilisé pour se connecter.</small>
+                                        @if ($editEchoue)
+                                            @error('username')
+                                                <span class="text-danger mt-1 d-block">{{ $message }}</span>
+                                            @enderror
+                                        @endif
+                                    </div>
+                                </div>
                                 <!-- Email -->
                                 <div class="col-xl-4 col-md-6 col-sm-12">
                                     <div class="form-group">

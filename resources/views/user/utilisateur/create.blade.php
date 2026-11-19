@@ -34,6 +34,15 @@
                   </div>
                 </div>
                 
+                <!-- Nom d'utilisateur -->
+                <div class="col-xl-4 col-md-6">
+                  <div class="form-group">
+                    <label for="username" class="form-label"><i class="bi bi-person-badge me-1"></i>Nom d'utilisateur :</label>
+                    <input type="text" class="form-control custom-input" id="username" name="username" value="{{ old('username') }}" placeholder="Ex : admin" required maxlength="50" autocomplete="off">
+                    <span class="text-danger mt-1 d-block error-span" id="username-error">@error('username'){{ $message }}@enderror</span>
+                  </div>
+                </div>
+
                 <!-- Email -->
                 <div class="col-xl-4 col-md-6">
                   <div class="form-group position-relative">
@@ -179,6 +188,11 @@
         prenom: {
             pattern: /^.{2,255}$/,
             message: "Le prénom doit contenir au moins 2 caractères.",
+            required: true
+        },
+        username: {
+            pattern: /^[A-Za-z0-9._-]{3,50}$/,
+            message: "Nom d'utilisateur : au moins 3 caractères (lettres, chiffres, . _ -), sans espace.",
             required: true
         },
         email: {
@@ -411,6 +425,11 @@
     emailInput?.addEventListener('blur', function() {
         if (!emailInput) return;
         const email = emailInput.value.trim();
+        const usernameInput = document.getElementById('username');
+        if (usernameInput && !usernameInput.value.trim() && email.includes('@')) {
+            usernameInput.value = email.split('@')[0].toLowerCase().replace(/[^a-z0-9._-]/g, '');
+            validateField(usernameInput);
+        }
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             emailExists = false;
             validateForm();

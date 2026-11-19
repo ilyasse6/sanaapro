@@ -221,7 +221,12 @@
                                         <input type="checkbox" form="factureBulkForm" name="ids[]" value="{{ $f->id }}" class="form-check-input facture-bulk-cb" aria-label="Sélectionner {{ $f->numero_facture }}">
                                     </td>
                                 @endif
-                                <td><strong>{{ $f->numero_facture }}</strong></td>
+                                <td>
+                                    <strong>{{ $f->numero_facture }}</strong>
+                                    @if($f->factureParent)
+                                        <div class="small text-muted">issue de {{ $f->factureParent->numero_facture }}</div>
+                                    @endif
+                                </td>
                                 <td>{{ $f->client->nom }}@if($f->client->prenom) – {{ $f->client->prenom }}@endif</td>
                                 <td>{{ $f->date_emission->format('d/m/Y') }}</td>
                                 <td>{{ $f->date_echeance ? $f->date_echeance->format('d/m/Y') : '—' }}</td>
@@ -244,6 +249,9 @@
                                             @if(Auth::user()->hasPermission('Gestion des Factures', 'modifier') && $f->actif)
                                                 <li><a class="dropdown-item" href="{{ route('factures.edit', $f) }}"><i class="bi bi-pencil me-2"></i>Modifier</a></li>
                                                 <li><a class="dropdown-item" href="{{ route('factures.duplicate', $f) }}"><i class="bi bi-copy me-2"></i>Dupliquer</a></li>
+                                            @endif
+                                            @if(Auth::user()->hasPermission('Gestion des Factures', 'ajouter') && $f->actif && in_array($f->statut, \App\Models\Facture::STATUTS_REPARTISSABLES, true))
+                                                <li><a class="dropdown-item" href="{{ route('factures.show', $f) }}#repartition"><i class="bi bi-scissors me-2"></i>Répartir en mini-factures</a></li>
                                             @endif
                                             @if(Auth::user()->hasPermission('Gestion des Factures', 'desactiver') && $f->actif)
                                                 <li><hr class="dropdown-divider"></li>

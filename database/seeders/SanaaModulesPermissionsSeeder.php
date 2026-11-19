@@ -8,7 +8,7 @@ use App\Models\Module;
 use App\Models\Permission;
 use Illuminate\Database\Seeder;
 
-class ProwiseModulesPermissionsSeeder extends Seeder
+class SanaaModulesPermissionsSeeder extends Seeder
 {
     public function run(): void
     {
@@ -62,6 +62,6 @@ class ProwiseModulesPermissionsSeeder extends Seeder
             ['valeur' => 'TVA non applicable - Art. 293 B du CGI']
         );
 
-        $this->command?->info('Modules et permissions Prowise : OK.');
+        $this->command?->info('Modules et permissions SanaaPro : OK.');
     }
 }

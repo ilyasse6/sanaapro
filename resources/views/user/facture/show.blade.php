@@ -55,6 +55,25 @@
 
     @include('user.partials.flash')
 
+    @if(in_array($facture->statut, \App\Support\CreditsClients::STATUTS_DUS, true) && Auth::user()->hasPermission('Gestion des Crédits & Chèques', 'consulter'))
+        @php
+            $fxRegle = \App\Support\CreditsClients::payeParFacture([$facture->id])[$facture->id] ?? 0;
+            $fxReste = max(0, round($facture->montant_ttc - $fxRegle, 2));
+        @endphp
+        <div class="facture-actions card border-0 shadow-sm mb-3">
+            <div class="card-body d-flex flex-wrap align-items-center gap-4">
+                <div><div class="small text-muted">Total TTC</div><strong>{{ number_format($facture->montant_ttc, 2, ',', ' ') }} DH</strong></div>
+                <div><div class="small text-muted">Réglé</div><strong class="text-success">{{ number_format($fxRegle, 2, ',', ' ') }} DH</strong></div>
+                <div><div class="small text-muted">Reste à payer</div><strong class="{{ $fxReste > 0 ? 'text-danger' : 'text-success' }}">{{ number_format($fxReste, 2, ',', ' ') }} DH</strong></div>
+                <a href="{{ route('credits.show', $facture->client_id) }}#nouveau-reglement" class="btn btn-sm btn-outline-success ms-auto">
+                    <i class="bi bi-cash-coin me-1"></i>{{ $fxReste > 0 ? 'Enregistrer un règlement' : 'Compte du client' }}
+                </a>
+            </div>
+        </div>
+    @endif
+
+    @include('user.facture.partials.repartition')
+
     @include('user.facture.partials.document-afifalu', [
         'facture' => $facture,
         'societe' => $societe,

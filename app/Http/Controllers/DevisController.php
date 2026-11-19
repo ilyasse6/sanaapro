@@ -99,7 +99,7 @@ class DevisController extends Controller
 
         $clients = Client::where('actif', 1)->orderBy('nom')->get();
         $services = CatalogueService::where('actif', 1)->orderBy('nom')->get();
-        $packs = Pack::where('actif', 1)->orderBy('nom')->get();
+        $packs = Pack::with('services')->where('actif', 1)->orderBy('nom')->get();
 
         $preselectedClientId = null;
         if ($request->filled('client_id')) {
@@ -135,6 +135,7 @@ class DevisController extends Controller
             'conditions_paiement' => 'nullable|string|max:500',
             'notes' => 'nullable|string|max:2000',
             'objet' => 'nullable|string|max:500',
+            'titre_lignes' => 'nullable|string|max:2000',
             'lignes' => 'required|array|min:1',
             'lignes.*.designation' => 'required|string|max:255',
             'lignes.*.quantite' => 'required|numeric|min:0.001',
@@ -165,6 +166,7 @@ class DevisController extends Controller
                     'conditions_paiement' => $request->conditions_paiement,
                     'notes' => $request->notes,
                     'objet' => $request->objet,
+                    'titre_lignes' => $request->titre_lignes,
                     'actif' => 1,
                     'user_insert' => $user->id,
                 ]);
@@ -237,7 +239,7 @@ class DevisController extends Controller
         $devi->load(['client', 'lignes']);
         $clients = Client::where('actif', 1)->orderBy('nom')->get();
         $services = CatalogueService::where('actif', 1)->orderBy('nom')->get();
-        $packs = Pack::where('actif', 1)->orderBy('nom')->get();
+        $packs = Pack::with('services')->where('actif', 1)->orderBy('nom')->get();
 
         $apercu = $this->apercuDevisData($services);
         $apercu['numero'] = $devi->numero_devis;
@@ -286,6 +288,7 @@ class DevisController extends Controller
             'conditions_paiement' => 'nullable|string|max:500',
             'notes' => 'nullable|string|max:2000',
             'objet' => 'nullable|string|max:500',
+            'titre_lignes' => 'nullable|string|max:2000',
             'lignes' => 'required|array|min:1',
             'lignes.*.designation' => 'required|string|max:255',
             'lignes.*.quantite' => 'required|numeric|min:0.001',
@@ -314,6 +317,7 @@ class DevisController extends Controller
                     'conditions_paiement' => $request->conditions_paiement,
                     'notes' => $request->notes,
                     'objet' => $request->objet,
+                    'titre_lignes' => $request->titre_lignes,
                     'user_update' => $user->id,
                 ]);
 

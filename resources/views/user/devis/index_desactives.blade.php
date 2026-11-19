@@ -3,9 +3,9 @@
 @section('content')
 <style>
     :root {
-        --prowise-blue: #17324D;
-        --prowise-blue-dark: #0f2438;
-        --prowise-gold: #198754;
+        --sanaa-blue: #17324D;
+        --sanaa-blue-dark: #0f2438;
+        --sanaa-gold: #198754;
         --gradient-devis-muted: linear-gradient(135deg, #64748b 0%, #475569 50%, #94a3b8 100%);
         --card-shadow: 0 10px 40px rgba(30, 64, 175, 0.08);
         --card-hover: 0 20px 60px rgba(30, 64, 175, 0.12);

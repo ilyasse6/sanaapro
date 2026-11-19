@@ -428,7 +428,7 @@ final class SocieteBranding
         }
 
         $bl->forceFill([
-            'branding_snapshot' => [
+            'branding_snapshot' => self::enteteDocument($bl->id_entreprise) + [
                 'nom' => $live['nom'],
                 'adresse' => $live['adresse'],
                 'telephone' => $live['telephone'],

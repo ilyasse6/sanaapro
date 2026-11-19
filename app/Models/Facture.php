@@ -18,12 +18,14 @@ class Facture extends Model
 
     protected $fillable = [
         'id_entreprise',
-        'client_id', 'devis_id', 'numero_facture', 'date_emission', 'date_echeance', 'statut',
+        'client_id', 'devis_id', 'facture_parent_id', 'numero_facture', 'date_emission', 'date_echeance', 'statut',
         'remise_globale_pct', 'taux_tva', 'total_ttc', 'conditions_paiement', 'notes', 'objet', 'branding_snapshot',
         'actif', 'user_insert', 'user_update',
     ];
 
     public const DESIGNATION_DEFAUT = 'Fourniture et pose d’aluminium + vitrage.';
+
+    public const STATUTS_REPARTISSABLES = ['brouillon', 'emise', 'envoyee', 'payee_partielle'];
 
     protected $casts = [
         'date_emission' => 'date',
@@ -43,6 +45,18 @@ class Facture extends Model
     public function devis(): BelongsTo
     {
         return $this->belongsTo(Devis::class, 'devis_id');
+    }
+
+    /** Facture d’origine dont celle-ci a été sortie (répartition). */
+    public function factureParent(): BelongsTo
+    {
+        return $this->belongsTo(Facture::class, 'facture_parent_id');
+    }
+
+    /** Mini-factures sorties de celle-ci ; leur total s’ajoute au TTC restant pour donner le montant d’origine. */
+    public function facturesReparties(): HasMany
+    {
+        return $this->hasMany(Facture::class, 'facture_parent_id')->orderBy('id');
     }
 
     public function lignes(): HasMany
@@ -116,16 +130,27 @@ class Facture extends Model
 
     public static function genererNumero(?int $idEntreprise = null): string
     {
-        $year = date('Y');
+        $prefix = 'FAC-'.date('Y').'-';
         $eid = $idEntreprise ?? CurrentTenant::id() ?? Auth::user()?->id_entreprise;
-        $q = static::query()->whereYear('created_at', $year);
+        $q = static::query()->where('numero_facture', 'like', $prefix.'%');
         if ($eid !== null) {
             $q->where('id_entreprise', $eid);
         }
-        $last = $q->orderByDesc('id')->first();
-        $num = $last ? (int) substr($last->numero_facture, -4) + 1 : 1;
 
-        return 'FAC-'.$year.'-'.str_pad((string) $num, 4, '0', STR_PAD_LEFT);
+        $num = 0;
+        foreach ($q->pluck('numero_facture') as $numero) {
+            if (preg_match('/^FAC-\d{4}-(\d+)$/', $numero, $m)) {
+                $num = max($num, (int) $m[1]);
+            }
+        }
+
+        // numero_facture est unique sur toutes les entreprises.
+        do {
+            $num++;
+            $numero = $prefix.str_pad((string) $num, 4, '0', STR_PAD_LEFT);
+        } while (static::withoutGlobalScopes()->where('numero_facture', $numero)->exists());
+
+        return $numero;
     }
 
     /**

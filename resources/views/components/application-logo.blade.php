@@ -1,1 +1,1 @@
-<img class="logo-img shadow-lg" src="{{ asset('assets/imgs/logo.png') }}" alt="Prowise" style="height:120px"/>
+<img class="logo-img shadow-lg" src="{{ asset('assets/imgs/logo.png') }}" alt="SanaaPro" style="height:120px"/>

@@ -99,7 +99,11 @@ class BonLivraison extends Model
                 $logoUrl = asset('storage/'.$path);
             }
 
-            return [
+            $entete = isset($snap['entete_titre'])
+                ? array_intersect_key($snap, array_flip(['entete_titre', 'entete_activite', 'pied_page']))
+                : SocieteBranding::enteteDocument($this->id_entreprise);
+
+            return $entete + [
                 'logo_path' => $path,
                 'logo_url' => $logoUrl,
                 'nom' => (string) ($snap['nom'] ?? ''),

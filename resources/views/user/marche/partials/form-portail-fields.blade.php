@@ -10,7 +10,7 @@
 <div class="marche-portail-collapse mb-4">
     <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePortailFields" aria-expanded="{{ $hasPortailData ? 'true' : 'false' }}" aria-controls="collapsePortailFields" id="btn-toggle-portail">
         <div class="d-flex align-items-center justify-content-between gap-2 py-2 px-3 rounded-3" style="background: rgba(30,64,175,0.06); border: 1px solid rgba(30,64,175,0.12);">
-            <span class="fw-semibold" style="color: var(--prowise-blue-dark, #0f2438);">
+            <span class="fw-semibold" style="color: var(--sanaa-blue-dark, #0f2438);">
                 <i class="bi bi-building me-2"></i>Détails portail (marchespublics.gov.ma)
                 <span class="text-muted fw-normal small ms-1">— optionnel, rempli par l’import</span>
             </span>
@@ -73,7 +73,7 @@
                     <label class="form-label fw-semibold">Lieu d’ouverture des plis</label>
                     <textarea name="lieu_ouverture_plis" class="form-control marche-textarea" rows="2">{{ $v('lieu_ouverture_plis') }}</textarea>
                 </div>
-                <div class="col-12"><h6 class="small text-uppercase mt-2 mb-0" style="color: var(--prowise-blue-dark, #0f2438); letter-spacing: 0.04em;">Contact administratif</h6></div>
+                <div class="col-12"><h6 class="small text-uppercase mt-2 mb-0" style="color: var(--sanaa-blue-dark, #0f2438); letter-spacing: 0.04em;">Contact administratif</h6></div>
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Nom / intitulé</label>
                     <input type="text" name="contact_nom" class="form-control marche-input" value="{{ $v('contact_nom') }}" maxlength="255">

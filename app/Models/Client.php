@@ -26,6 +26,7 @@ class Client extends Model
         'rc',
         'secteur_activite',
         'notes',
+        'credit_initial',
         'besoin_diagnostic',
         'actif',
         'user_insert',
@@ -36,6 +37,7 @@ class Client extends Model
         'date_naissance' => 'date',
         'actif' => 'boolean',
         'besoin_diagnostic' => 'boolean',
+        'credit_initial' => 'decimal:2',
     ];
 
     /**
@@ -67,6 +69,16 @@ class Client extends Model
     public function factures()
     {
         return $this->hasMany(Facture::class);
+    }
+
+    public function reglements()
+    {
+        return $this->hasMany(ComptaMouvement::class)->where('type', 'paiement_client');
+    }
+
+    public function cheques()
+    {
+        return $this->hasMany(Cheque::class);
     }
 
     public function marches()

@@ -13,7 +13,7 @@
                             </h6>
                             <div class="row g-3">
                                 <!-- Nom -->
-                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
                                     <div class="form-group">
                                         <label for="searchNom" class="form-label">
                                             <i class="bi bi-person-fill me-1"></i>Nom :
@@ -24,13 +24,23 @@
                                 </div>
 
                                 <!-- Prénom -->
-                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
                                     <div class="form-group">
                                         <label for="searchPrenom" class="form-label">
                                             <i class="bi bi-person-fill me-1"></i>Prénom :
                                         </label>
                                         <input type="text" class="form-control custom-input" id="searchPrenom"
                                             placeholder="Saisissez le prénom">
+                                    </div>
+                                </div>
+                                <!-- Nom d'utilisateur -->
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="searchUsername" class="form-label">
+                                            <i class="bi bi-person-badge me-1"></i>Nom d'utilisateur :
+                                        </label>
+                                        <input type="text" class="form-control custom-input" id="searchUsername"
+                                            placeholder="Saisissez le nom d'utilisateur">
                                     </div>
                                 </div>
                                 <!-- Etablissement -->
@@ -192,6 +202,7 @@
                                         <tr class="text-center">
                                             <th>Nom</th>
                                             <th>Prénom</th>
+                                            <th>Nom d'utilisateur</th>
                                             <th>Email</th>
                                             <th>Entreprise</th>
                                             <th>Poste</th>
@@ -203,11 +214,19 @@
                                         @foreach ($utilisateurs as $utilisateur)
                                             <tr class="text-center" data-nom="{{ $utilisateur->nom }}"
                                                 data-prenom="{{ $utilisateur->prenom }}"
+                                                data-username="{{ $utilisateur->username }}"
                                                 data-etablissement="{{ $utilisateur->entreprise->abbreviation ?? 'N/A' }}"
                                                 data-poste="{{ $utilisateur->poste_occupe->intitule ?? 'N/A' }}"
                                                 data-profile="{{ $utilisateur->profile->nom ?? 'N/A' }}">
                                                 <td>{{ Str::limit($utilisateur->nom, 20) }}</td>
                                                 <td>{{ Str::limit($utilisateur->prenom, 20) }}</td>
+                                                <td>
+                                                    @if ($utilisateur->username)
+                                                        <span class="fw-semibold">{{ Str::limit($utilisateur->username, 25) }}</span>
+                                                    @else
+                                                        <span class="text-muted">—</span>
+                                                    @endif
+                                                </td>
                                                 <td>{{ Str::limit($utilisateur->email, 30) }}</td>
                                                 <td>{{ Str::limit($utilisateur->entreprise->abbreviation ?? 'N/A', 10) }}
                                                 </td>
@@ -296,6 +315,13 @@
                     }
                 }
             });
+
+            @if (session('failed_modal') && str_starts_with(session('failed_modal'), 'EditModal-'))
+                const modalEchoue = document.getElementById(@json(session('failed_modal')));
+                if (modalEchoue) {
+                    bootstrap.Modal.getOrCreateInstance(modalEchoue).show();
+                }
+            @endif
         });
     </script>
 

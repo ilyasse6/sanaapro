@@ -31,6 +31,15 @@
                                         <input type="text" class="form-control custom-input" value="{{ $utilisateur->prenom }}" readonly>
                                     </div>
                                 </div>
+                                <!-- Nom d'utilisateur -->
+                                <div class="col-xl-6 col-md-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="bi bi-person-badge me-1"></i> Nom d'utilisateur :
+                                        </label>
+                                        <input type="text" class="form-control custom-input" value="{{ $utilisateur->username ?? 'N/A' }}" readonly>
+                                    </div>
+                                </div>
                                 <!-- Email -->
                                 <div class="col-xl-6 col-md-6 col-sm-12">
                                     <div class="form-group">

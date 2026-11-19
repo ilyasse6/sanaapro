@@ -80,6 +80,7 @@
                             <td><span class="badge bg-secondary">{{ $bl->statut_label }}</span></td>
                             <td class="text-end text-nowrap">
                                 @if(Auth::user()->hasPermission('Gestion des Bons de livraison', 'consulter'))
+                                    <a href="{{ route('bons-livraison.show', $bl) }}?print=1" class="btn btn-sm btn-outline-secondary" target="_blank" rel="noopener" title="Imprimer"><i class="bi bi-printer"></i></a>
                                     <a href="{{ route('bons-livraison.pdf', $bl) }}" class="btn btn-sm btn-outline-secondary" target="_blank" title="PDF"><i class="bi bi-file-pdf"></i></a>
                                 @endif
                                 @if(Auth::user()->hasPermission('Gestion des Bons de livraison', 'modifier') && $bl->actif)

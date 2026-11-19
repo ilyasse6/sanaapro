@@ -25,7 +25,7 @@
 <div class="ios-agenda-wrap mb-4">
     @if(!($hideAgendaToolbar ?? false))
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-        <h5 class="mb-0 d-flex align-items-center gap-2" style="font-size:1.1rem;font-weight:700;color:var(--prowise-blue-dark);">
+        <h5 class="mb-0 d-flex align-items-center gap-2" style="font-size:1.1rem;font-weight:700;color:var(--sanaa-blue-dark);">
             <i class="bi bi-grid-1x2-fill"></i> Agenda
         </h5>
         <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#homeDashboardAjouterModal">

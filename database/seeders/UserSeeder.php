@@ -43,8 +43,8 @@ class UserSeeder extends Seeder
             }
 
             // === Admins ===
-            // Nom d'utilisateur (identifiant court à la connexion) = partie locale avant @prowise.ma
-            $domaine = 'prowise.ma';
+            // Nom d'utilisateur (identifiant court à la connexion) = partie locale avant @afifalu.ma
+            $domaine = 'afifalu.ma';
             $admins = [
                 [
                     'nom' => 'Admin',

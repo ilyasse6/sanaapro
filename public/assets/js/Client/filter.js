@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", function () {
         responsive: true,
         autoWidth: false,
         drawCallback: function () {
-            if (window.ProwiseTableActionDropdowns && typeof window.ProwiseTableActionDropdowns.init === "function") {
-                window.ProwiseTableActionDropdowns.init();
+            if (window.SanaaTableActionDropdowns && typeof window.SanaaTableActionDropdowns.init === "function") {
+                window.SanaaTableActionDropdowns.init();
             }
         },
         language: {

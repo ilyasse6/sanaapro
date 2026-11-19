@@ -31,6 +31,30 @@ class CatalogueService extends Model
         'actif' => 'boolean',
     ];
 
+    public const DOSSIERS_IMAGES = [
+        'assets/imgs/catalogue-aluminium',
+        'assets/imgs/catalogue-uploads',
+    ];
+
+    public const DOSSIER_UPLOADS = 'assets/imgs/catalogue-uploads';
+
+    /**
+     * Images proposées dans la galerie du catalogue (chemins relatifs à public/).
+     *
+     * @return list<string>
+     */
+    public static function galerieImages(): array
+    {
+        $images = [];
+        foreach (self::DOSSIERS_IMAGES as $dossier) {
+            foreach (glob(public_path($dossier).'/*.{png,jpg,jpeg,webp,gif}', GLOB_BRACE) ?: [] as $fichier) {
+                $images[] = $dossier.'/'.basename($fichier);
+            }
+        }
+
+        return $images;
+    }
+
     /**
      * Relation avec les packs
      */

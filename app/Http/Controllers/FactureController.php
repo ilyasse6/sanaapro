@@ -7,6 +7,7 @@ use App\Models\Devis;
 use App\Models\Facture;
 use App\Models\FactureLigne;
 use App\Support\ClientSaisi;
+use App\Support\CreditsClients;
 use App\Support\SocieteBranding;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -36,7 +37,7 @@ class FactureController extends Controller
             return $r;
         }
 
-        $query = Facture::with(['client', 'devis', 'lignes'])->where('actif', 1);
+        $query = Facture::with(['client', 'devis', 'lignes', 'factureParent'])->where('actif', 1);
 
         if ($request->filled('numero')) {
             $query->where('numero_facture', 'like', '%'.$request->numero.'%');
@@ -95,7 +96,7 @@ class FactureController extends Controller
         if ($r = $this->ensure('consulter')) {
             return $r;
         }
-        $facture->load(['client', 'devis', 'lignes']);
+        $facture->load(['client', 'devis', 'lignes', 'factureParent.lignes', 'factureParent.facturesReparties.lignes', 'facturesReparties.lignes']);
 
         return view('user.facture.show', compact('facture'));
     }
@@ -255,6 +256,83 @@ class FactureController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Statut de la facture mis à jour.');
+    }
+
+    /**
+     * Sort une mini-facture d’une facture : le montant saisi devient une nouvelle facture (nouveau numéro)
+     * et le TTC de la facture d’origine diminue d’autant, pour que le total facturé au client reste inchangé.
+     */
+    public function repartir(Request $request, Facture $facture)
+    {
+        if ($r = $this->ensure('ajouter')) {
+            return $r;
+        }
+        if (! $facture->actif) {
+            return redirect()->back()->with('error', 'Réactivez la facture avant de la répartir.');
+        }
+        if (! in_array($facture->statut, Facture::STATUTS_REPARTISSABLES, true)) {
+            return redirect()->back()->with('error', 'Une facture « '.$facture->statut_label.' » ne peut pas être répartie.');
+        }
+
+        $facture->load('lignes');
+        $ttcActuel = $facture->montant_ttc;
+        $dejaRegle = CreditsClients::payeParFacture([$facture->id])[$facture->id] ?? 0.0;
+        $maximum = round($ttcActuel - max($dejaRegle, 0.01), 2);
+
+        $validator = Validator::make($request->all(), [
+            'montant_ttc' => 'required|numeric|min:0.01|max:'.max($maximum, 0),
+            'designation' => 'required|string|max:5000',
+            'date_emission' => 'required|date',
+        ], [
+            'montant_ttc.required' => 'Saisissez le montant TTC de la mini-facture.',
+            'montant_ttc.max' => $dejaRegle > 0
+                ? 'Le montant ne peut pas dépasser '.number_format($maximum, 2, ',', ' ').' DH : '.number_format($dejaRegle, 2, ',', ' ').' DH sont déjà réglés sur cette facture.'
+                : 'Le montant doit être inférieur au TTC de la facture ('.number_format($ttcActuel, 2, ',', ' ').' DH).',
+            'designation.required' => 'Saisissez la désignation de la mini-facture.',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator, 'repartition')->withInput();
+        }
+
+        $user = Auth::user();
+        $montant = round((float) $request->montant_ttc, 2);
+
+        try {
+            $nouvelle = DB::transaction(function () use ($facture, $request, $user, $montant, $ttcActuel) {
+                $designationOrigine = $facture->designation_unique ?: Facture::DESIGNATION_DEFAUT;
+
+                $mini = $facture->replicate(['devis_id', 'branding_snapshot', 'user_update']);
+                $mini->facture_parent_id = $facture->facture_parent_id ?? $facture->id;
+                $mini->numero_facture = Facture::genererNumero($facture->id_entreprise);
+                $mini->date_emission = $request->date_emission;
+                $mini->statut = $facture->statut === 'brouillon' ? 'brouillon' : 'emise';
+                $mini->remise_globale_pct = 0;
+                $mini->total_ttc = $montant;
+                $mini->user_insert = $user->id;
+                $mini->save();
+                $this->enregistrerLigneUnique($mini, trim((string) $request->designation));
+
+                $facture->update([
+                    'total_ttc' => round($ttcActuel - $montant, 2),
+                    'remise_globale_pct' => 0,
+                    'user_update' => $user->id,
+                ]);
+                $this->enregistrerLigneUnique($facture, $designationOrigine);
+
+                return $mini;
+            });
+        } catch (\Throwable $e) {
+            Log::error('FactureController@repartir: '.$e->getMessage());
+
+            return redirect()->back()->with('error', 'Impossible de créer la mini-facture.')->withInput();
+        }
+
+        SocieteBranding::duplicateSnapshotForFacture($facture->fresh(), $nouvelle);
+        CreditsClients::recalculerStatutFacture($facture->fresh(), $user->id);
+
+        return redirect()->route('factures.show', $nouvelle)->with('success',
+            'Mini-facture '.$nouvelle->numero_facture.' créée ('.number_format($montant, 2, ',', ' ').' DH TTC). '
+            .'La facture '.$facture->numero_facture.' passe à '.number_format($ttcActuel - $montant, 2, ',', ' ').' DH TTC.');
     }
 
     public function desactivate($id)
@@ -425,6 +503,7 @@ class FactureController extends Controller
                 $facture->load('lignes');
                 $copy = $facture->replicate();
                 $copy->devis_id = null;
+                $copy->facture_parent_id = null;
                 $copy->branding_snapshot = null;
                 $copy->numero_facture = Facture::genererNumero($facture->id_entreprise);
                 $copy->date_emission = now()->toDateString();

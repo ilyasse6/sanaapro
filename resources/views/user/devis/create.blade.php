@@ -126,6 +126,7 @@
                             <label class="form-label">Taux TVA (%)</label>
                             <input type="number" name="taux_tva" id="taux_tva" class="form-control modern-input" value="{{ old('taux_tva', 20) }}" min="0" max="100" step="0.01">
                         </div>
+                        @include('user.devis.partials.benefice')
                     </div>
                 </div>
                 <div class="totaux-box mb-4">
@@ -141,17 +142,23 @@
         </div>
         <div class="card card-devis mb-4">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="mb-4">
                     <h6 class="card-title mb-0">Lignes du devis (prestations / produits)</h6>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Titre <small class="text-muted fw-normal">(première ligne du tableau, en gras, sans numéro)</small></label>
+                    <textarea name="titre_lignes" class="form-control modern-input" rows="3" maxlength="2000" placeholder="Ex : Fourniture des accessoires et des profilés en barres. Gamme : SEPALUMIC…">{{ old('titre_lignes') }}</textarea>
+                </div>
+                <div id="lignesContainer">
+                    <!-- Lignes ajoutées par JS -->
+                </div>
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
+                    <p class="text-muted small mb-0">Au moins une ligne est requise. Ajoutez des prestations depuis le catalogue ou saisissez une ligne libre.</p>
                     <div class="d-flex gap-2">
                         <button type="button" class="btn btn-outline-primary btn-sm btn-add-line" id="btnAddFromCatalogue"><i class="bi bi-box-seam me-1"></i>Depuis le catalogue</button>
                         <button type="button" class="btn btn-primary btn-sm btn-add-line" id="btnAddLigne"><i class="bi bi-plus-lg me-1"></i>Ligne libre</button>
                     </div>
                 </div>
-                <div id="lignesContainer">
-                    <!-- Lignes ajoutées par JS -->
-                </div>
-                <p class="text-muted small mb-0">Au moins une ligne est requise. Ajoutez des prestations depuis le catalogue ou saisissez une ligne libre.</p>
             </div>
         </div>
         <div class="mb-4">
@@ -160,47 +167,7 @@
     </form>
 </div>
 
-<!-- Modal catalogue -->
-<div class="modal fade" id="modalCatalogue" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Ajouter depuis le catalogue</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <ul class="nav nav-tabs mb-3" role="tablist">
-                    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tabPrestations">Prestations / Produits</a></li>
-                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tabPacks">Packs</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tabPrestations">
-                        @foreach($services as $s)
-                            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                                <span>{{ $s->nom }} – {{ number_format($s->prix_apres_reduction, 2, ',', ' ') }} MAD</span>
-                                <button type="button" class="btn btn-sm btn-outline-primary add-from-catalogue" data-designation="{{ $s->nom }}" data-description="{{ $s->description }}" data-prix="{{ $s->prix_apres_reduction }}" data-type="prestation" data-id="{{ $s->id }}">Ajouter</button>
-                            </div>
-                        @endforeach
-                        @if($services->isEmpty())
-                            <p class="text-muted">Aucune prestation dans le catalogue.</p>
-                        @endif
-                    </div>
-                    <div class="tab-pane fade" id="tabPacks">
-                        @foreach($packs as $p)
-                            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                                <span>{{ $p->nom }} – {{ number_format($p->prix_apres_reduction, 2, ',', ' ') }} MAD</span>
-                                <button type="button" class="btn btn-sm btn-outline-primary add-from-catalogue" data-designation="{{ $p->nom }}" data-prix="{{ $p->prix_apres_reduction }}" data-type="pack" data-id="{{ $p->id }}">Ajouter</button>
-                            </div>
-                        @endforeach
-                        @if($packs->isEmpty())
-                            <p class="text-muted">Aucun pack dans le catalogue.</p>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+@include('user.devis.partials.modal-catalogue')
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

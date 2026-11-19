@@ -23,7 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if ($this->app->environment('production')) {
+        // Uniquement si l'URL publique est vraiment en HTTPS (évite les redirections
+        // cassées / lentes quand on sert encore en HTTP via IP).
+        $appUrl = (string) config('app.url');
+        if (str_starts_with($appUrl, 'https://') || filter_var(env('FORCE_HTTPS', false), FILTER_VALIDATE_BOOLEAN)) {
             URL::forceScheme('https');
         }
     }

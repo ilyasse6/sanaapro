@@ -7,6 +7,8 @@ use App\Models\Pack;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class CatalogueController extends Controller
 {
@@ -21,7 +23,11 @@ class CatalogueController extends Controller
         }
         $services = CatalogueService::orderBy('nom')->get();
         $packs = Pack::with('services')->orderBy('nom')->get();
-        return view('user.catalogue.index', compact('services', 'packs'));
+        $galerie = collect(CatalogueService::galerieImages())->mapWithKeys(fn ($img) => [
+            $img => Str::of($services->firstWhere('image', $img)?->nom ?? Str::of(pathinfo($img, PATHINFO_FILENAME))->replace('-', ' ')->ucfirst())
+                ->replace(' en aluminium SEPALUMIC', '')->toString(),
+        ])->all();
+        return view('user.catalogue.index', compact('services', 'packs', 'galerie'));
     }
 
     public function storeService(Request $request)
@@ -30,18 +36,14 @@ class CatalogueController extends Controller
         if (!$user || !$user->hasPermission('Gestion des Catalogues', 'ajouter')) {
             return redirect()->back()->with('error', 'Permission refusée.');
         }
-        $validator = Validator::make($request->all(), [
-            'nom' => 'required|string|max:255',
-            'description' => 'nullable|string|max:2000',
-            'prix' => 'required|numeric|min:0',
-            'reduction' => 'nullable|numeric|min:0|max:100',
-        ]);
+        $validator = Validator::make($request->all(), $this->reglesService());
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput()->with('tab', 'prestations');
         }
         CatalogueService::create([
             'nom' => $request->nom,
             'description' => $request->description,
+            'image' => $this->imageChoisie($request),
             'prix' => $request->prix,
             'reduction' => $request->reduction ?? 0,
             'actif' => 1,
@@ -57,23 +59,47 @@ class CatalogueController extends Controller
             return redirect()->back()->with('error', 'Permission refusée.');
         }
         $service = CatalogueService::findOrFail($id);
-        $validator = Validator::make($request->all(), [
-            'nom' => 'required|string|max:255',
-            'description' => 'nullable|string|max:2000',
-            'prix' => 'required|numeric|min:0',
-            'reduction' => 'nullable|numeric|min:0|max:100',
-        ]);
+        $validator = Validator::make($request->all(), $this->reglesService($service->image));
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput()->with('tab', 'prestations');
         }
         $service->update([
             'nom' => $request->nom,
             'description' => $request->description,
+            'image' => $this->imageChoisie($request),
             'prix' => $request->prix,
             'reduction' => $request->reduction ?? 0,
             'user_update' => $user->id,
         ]);
         return redirect()->route('catalogue.index')->with('success', 'Prestation / produit modifiée.')->with('tab', 'prestations');
+    }
+
+    private function reglesService(?string $imageActuelle = null): array
+    {
+        return [
+            'nom' => 'required|string|max:255',
+            'description' => 'nullable|string|max:2000',
+            'prix' => 'required|numeric|min:0',
+            'reduction' => 'nullable|numeric|min:0|max:100',
+            'image' => ['nullable', 'string', Rule::in(array_filter([...CatalogueService::galerieImages(), $imageActuelle]))],
+            'image_upload' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:5120',
+        ];
+    }
+
+    /**
+     * L'image envoyée l'emporte sur celle choisie dans la galerie ; elle rejoint ensuite la galerie.
+     */
+    private function imageChoisie(Request $request): ?string
+    {
+        if ($request->hasFile('image_upload')) {
+            $fichier = $request->file('image_upload');
+            $nom = Str::slug(Str::limit($request->nom, 60, '')).'-'.now()->format('YmdHis').'.'.$fichier->extension();
+            $fichier->move(public_path(CatalogueService::DOSSIER_UPLOADS), $nom);
+
+            return CatalogueService::DOSSIER_UPLOADS.'/'.$nom;
+        }
+
+        return $request->filled('image') ? $request->image : null;
     }
 
     public function desactivateService($id)

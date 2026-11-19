@@ -36,7 +36,7 @@ class MarchesPublicsConsultationImporter
         try {
             $response = Http::timeout(45)
                 ->withHeaders([
-                    'User-Agent' => 'Mozilla/5.0 (compatible; ProwiseApp/1.0; +https://example.invalid)',
+                    'User-Agent' => 'Mozilla/5.0 (compatible; SanaaProApp/1.0; +https://example.invalid)',
                     'Accept' => 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.8',
                     'Accept-Language' => 'fr-FR,fr;q=0.9',
                 ])

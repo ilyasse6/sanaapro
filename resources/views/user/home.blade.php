@@ -4,20 +4,20 @@
 <style>
     /* SanaaPro theme: navy + green, aligned with ParaGestion */
     :root {
-        --prowise-blue: #17324D;
-        --prowise-blue-dark: #0f2438;
-        --prowise-blue-light: #1e4060;
-        --prowise-gold: #198754;
-        --prowise-gold-light: #8fd4b8;
-        --prowise-gold-dark: #146c43;
-        --gradient-primary: linear-gradient(135deg, var(--prowise-blue) 0%, var(--prowise-blue-dark) 100%);
-        --gradient-prowise: linear-gradient(135deg, var(--prowise-blue) 0%, var(--prowise-gold) 100%);
-        --gradient-secondary: linear-gradient(135deg, var(--prowise-gold) 0%, var(--prowise-gold-dark) 100%);
+        --sanaa-blue: #17324D;
+        --sanaa-blue-dark: #0f2438;
+        --sanaa-blue-light: #1e4060;
+        --sanaa-gold: #198754;
+        --sanaa-gold-light: #8fd4b8;
+        --sanaa-gold-dark: #146c43;
+        --gradient-primary: linear-gradient(135deg, var(--sanaa-blue) 0%, var(--sanaa-blue-dark) 100%);
+        --gradient-sanaa: linear-gradient(135deg, var(--sanaa-blue) 0%, var(--sanaa-gold) 100%);
+        --gradient-secondary: linear-gradient(135deg, var(--sanaa-gold) 0%, var(--sanaa-gold-dark) 100%);
         --gradient-success: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-        --gradient-warning: linear-gradient(135deg, var(--prowise-gold-light) 0%, var(--prowise-gold) 100%);
-        --gradient-info: linear-gradient(135deg, var(--prowise-blue-light) 0%, var(--prowise-blue) 100%);
+        --gradient-warning: linear-gradient(135deg, var(--sanaa-gold-light) 0%, var(--sanaa-gold) 100%);
+        --gradient-info: linear-gradient(135deg, var(--sanaa-blue-light) 0%, var(--sanaa-blue) 100%);
         --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        --gradient-orange: linear-gradient(135deg, var(--prowise-gold) 0%, #c2410c 100%);
+        --gradient-orange: linear-gradient(135deg, var(--sanaa-gold) 0%, #c2410c 100%);
         --card-shadow: 0 10px 40px rgba(30, 64, 175, 0.08);
         --card-hover-shadow: 0 20px 60px rgba(30, 64, 175, 0.12);
     }
@@ -75,7 +75,7 @@
 
     .stat-card .stat-trend.up {
         background: rgba(212, 175, 55, 0.2);
-        color: var(--prowise-gold-dark);
+        color: var(--sanaa-gold-dark);
     }
 
     .stat-card .stat-trend.down {
@@ -85,7 +85,7 @@
 
     .stat-card .stat-trend.warning {
         background: rgba(212, 175, 55, 0.2);
-        color: var(--prowise-gold-dark);
+        color: var(--sanaa-gold-dark);
     }
 
     .icon-primary { background: var(--gradient-primary); }
@@ -99,7 +99,7 @@
     .section-title {
         font-size: 1.1rem;
         font-weight: 700;
-        color: var(--prowise-blue-dark);
+        color: var(--sanaa-blue-dark);
         margin-bottom: 1.25rem;
         display: flex;
         align-items: center;
@@ -117,7 +117,7 @@
     .chart-card .card-title {
         font-size: 1rem;
         font-weight: 700;
-        color: var(--prowise-blue-dark);
+        color: var(--sanaa-blue-dark);
         margin-bottom: 1rem;
         display: flex;
         align-items: center;
@@ -161,8 +161,8 @@
     }
 
     .category-card.medical { border-left-color: #ef4444; }
-    .category-card.cuisine { border-left-color: var(--prowise-gold); }
-    .category-card.bureautique { border-left-color: var(--prowise-blue); }
+    .category-card.cuisine { border-left-color: var(--sanaa-gold); }
+    .category-card.bureautique { border-left-color: var(--sanaa-blue); }
     .category-card.industriel { border-left-color: #16a34a; }
 
     .category-icon {
@@ -178,9 +178,9 @@
     }
 
     .category-info { flex: 1; }
-    .category-name { font-weight: 600; color: var(--prowise-blue-dark); margin-bottom: 0.25rem; }
+    .category-name { font-weight: 600; color: var(--sanaa-blue-dark); margin-bottom: 0.25rem; }
     .category-meta { font-size: 0.75rem; color: #6c757d; }
-    .category-value { font-weight: 700; color: var(--prowise-blue-dark); }
+    .category-value { font-weight: 700; color: var(--sanaa-blue-dark); }
 
     .equipment-list, .invoice-list {
         max-height: 320px;
@@ -215,7 +215,7 @@
     }
 
     .equipment-info, .invoice-info { flex: 1; }
-    .equipment-name, .invoice-ref { font-weight: 600; color: var(--prowise-blue-dark); font-size: 0.9rem; }
+    .equipment-name, .invoice-ref { font-weight: 600; color: var(--sanaa-blue-dark); font-size: 0.9rem; }
     .equipment-meta, .invoice-meta { font-size: 0.75rem; color: #6c757d; }
     .equipment-stock, .invoice-amount {
         padding: 0.25rem 0.75rem;
@@ -224,8 +224,8 @@
         font-weight: 600;
     }
 
-    .stock-ok { background: rgba(212, 175, 55, 0.2); color: var(--prowise-gold-dark); }
-    .stock-low { background: rgba(212, 175, 55, 0.25); color: var(--prowise-gold-dark); }
+    .stock-ok { background: rgba(212, 175, 55, 0.2); color: var(--sanaa-gold-dark); }
+    .stock-low { background: rgba(212, 175, 55, 0.25); color: var(--sanaa-gold-dark); }
     .stock-critique { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
 
     .treatment-stat {
@@ -247,8 +247,8 @@
         margin-bottom: 0.5rem;
     }
     .payment-method:last-child { margin-bottom: 0; }
-    .payment-method-name { display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: var(--prowise-blue-dark); font-size: 0.875rem; }
-    .payment-method-amount { font-weight: 700; color: var(--prowise-gold-dark); }
+    .payment-method-name { display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: var(--sanaa-blue-dark); font-size: 0.875rem; }
+    .payment-method-amount { font-weight: 700; color: var(--sanaa-gold-dark); }
     .progress-bar-custom { height: 8px; border-radius: 4px; background: #e9ecef; overflow: hidden; margin-top: 0.5rem; }
     .progress-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
 
@@ -260,7 +260,7 @@
         padding: 0.75rem 1rem;
         border-radius: 12px;
         background: rgba(30, 64, 175, 0.06);
-        color: var(--prowise-blue-dark);
+        color: var(--sanaa-blue-dark);
         font-weight: 600;
         font-size: 0.875rem;
         text-decoration: none;
@@ -268,7 +268,7 @@
         border: 2px solid rgba(30, 64, 175, 0.15);
     }
     .quick-action-btn:hover {
-        background: var(--gradient-prowise);
+        background: var(--gradient-sanaa);
         color: white;
         border-color: transparent;
     }
@@ -288,7 +288,7 @@
 
     <!-- Statistiques principales : Factures, Devis, Stock -->
     <h5 class="section-title">
-        <i class="bi bi-graph-up-arrow" style="color: var(--prowise-blue);"></i>
+        <i class="bi bi-graph-up-arrow" style="color: var(--sanaa-blue);"></i>
         Vue d'ensemble
     </h5>
     <div class="row g-4 mb-4">
@@ -299,7 +299,7 @@
                 </div>
                 <div class="d-flex align-items-end justify-content-between">
                     <div>
-                        <div class="stat-number" style="color: var(--prowise-blue);">{{ number_format($s['factures_ce_mois'] ?? 0, 0, ',', ' ') }}</div>
+                        <div class="stat-number" style="color: var(--sanaa-blue);">{{ number_format($s['factures_ce_mois'] ?? 0, 0, ',', ' ') }}</div>
                         <div class="stat-label">Factures ce mois</div>
                     </div>
                     @if(!empty($s['factures_ce_mois_trend']))
@@ -315,7 +315,7 @@
                 </div>
                 <div class="d-flex align-items-end justify-content-between">
                     <div>
-                        <div class="stat-number" style="color: var(--prowise-gold-dark);">{{ number_format($s['devis_en_attente'] ?? 0, 0, ',', ' ') }}</div>
+                        <div class="stat-number" style="color: var(--sanaa-gold-dark);">{{ number_format($s['devis_en_attente'] ?? 0, 0, ',', ' ') }}</div>
                         <div class="stat-label">Devis en attente</div>
                     </div>
                     @if(!empty($s['devis_en_attente_trend']))
@@ -331,7 +331,7 @@
                 </div>
                 <div class="d-flex align-items-end justify-content-between">
                     <div>
-                        <div class="stat-number" style="color: var(--prowise-gold-dark);">{{ number_format($s['articles_stock_total'] ?? 0, 0, ',', ' ') }}</div>
+                        <div class="stat-number" style="color: var(--sanaa-gold-dark);">{{ number_format($s['articles_stock_total'] ?? 0, 0, ',', ' ') }}</div>
                         <div class="stat-label">Articles en stock</div>
                     </div>
                     @if(($s['stock_alertes'] ?? 0) > 0)
@@ -347,7 +347,7 @@
                 </div>
                 <div class="d-flex align-items-end justify-content-between">
                     <div>
-                        <div class="stat-number" style="color: var(--prowise-blue);">{{ number_format($s['clients_actifs'] ?? 0, 0, ',', ' ') }}</div>
+                        <div class="stat-number" style="color: var(--sanaa-blue);">{{ number_format($s['clients_actifs'] ?? 0, 0, ',', ' ') }}</div>
                         <div class="stat-label">Clients actifs</div>
                     </div>
                     @if(!empty($s['clients_actifs_trend']))
@@ -360,7 +360,7 @@
 
     <!-- Revenus & CA -->
     <h5 class="section-title">
-        <i class="bi bi-cash-stack" style="color: var(--prowise-gold-dark);"></i>
+        <i class="bi bi-cash-stack" style="color: var(--sanaa-gold-dark);"></i>
         Chiffre d'affaires & Revenus
     </h5>
     <div class="row g-4 mb-4">
@@ -371,7 +371,7 @@
                 </div>
                 <div class="d-flex align-items-end justify-content-between">
                     <div>
-                        <div class="stat-number" style="color: var(--prowise-gold-dark);">{{ $s['ca_ce_mois_fmt'] ?? '0 MAD' }}</div>
+                        <div class="stat-number" style="color: var(--sanaa-gold-dark);">{{ $s['ca_ce_mois_fmt'] ?? '0 MAD' }}</div>
                         <div class="stat-label">CA ce mois</div>
                     </div>
                     @if(!empty($s['ca_ce_mois_trend']))
@@ -387,7 +387,7 @@
                 </div>
                 <div class="d-flex align-items-end justify-content-between">
                     <div>
-                        <div class="stat-number" style="color: var(--prowise-blue);">{{ $s['panier_moyen_fmt'] ?? '0 MAD' }}</div>
+                        <div class="stat-number" style="color: var(--sanaa-blue);">{{ $s['panier_moyen_fmt'] ?? '0 MAD' }}</div>
                         <div class="stat-label">Panier moyen facture</div>
                     </div>
                     @if(!empty($s['panier_moyen_trend']))
@@ -403,7 +403,7 @@
                 </div>
                 <div class="d-flex align-items-end justify-content-between">
                     <div>
-                        <div class="stat-number" style="color: var(--prowise-blue);">{{ $s['encaissements_ce_mois_fmt'] ?? '0 MAD' }}</div>
+                        <div class="stat-number" style="color: var(--sanaa-blue);">{{ $s['encaissements_ce_mois_fmt'] ?? '0 MAD' }}</div>
                         <div class="stat-label">Encaissements ce mois</div>
                     </div>
                     @if(!empty($s['encaissements_ce_mois_trend']))
@@ -419,7 +419,7 @@
                 </div>
                 <div class="d-flex align-items-end justify-content-between">
                     <div>
-                        <div class="stat-number" style="color: var(--prowise-gold-dark);">{{ $s['factures_en_attente_montant_fmt'] ?? '0 MAD' }}</div>
+                        <div class="stat-number" style="color: var(--sanaa-gold-dark);">{{ $s['factures_en_attente_montant_fmt'] ?? '0 MAD' }}</div>
                         <div class="stat-label">Factures en attente</div>
                     </div>
                     @if(!empty($s['factures_en_attente_trend']))
@@ -454,7 +454,7 @@
                 <div class="mt-4 p-3 rounded-3" style="background: rgba(212, 175, 55, 0.15);">
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="fw-semibold text-muted">Total encaissé</span>
-                        <span class="fw-bold fs-5" style="color: var(--prowise-gold-dark);">{{ $s['total_encaisse_fmt'] ?? '0 MAD' }}</span>
+                        <span class="fw-bold fs-5" style="color: var(--sanaa-gold-dark);">{{ $s['total_encaisse_fmt'] ?? '0 MAD' }}</span>
                     </div>
                 </div>
             </div>
@@ -465,7 +465,7 @@
             <div class="chart-card">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-receipt" style="color: var(--prowise-blue);"></i>
+                        <i class="bi bi-receipt" style="color: var(--sanaa-blue);"></i>
                         Dernières factures
                     </h5>
                     <a href="{{ route('factures.index') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">Voir tout</a>
@@ -494,7 +494,7 @@
             <div class="chart-card">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-box-seam" style="color: var(--prowise-gold);"></i>
+                        <i class="bi bi-box-seam" style="color: var(--sanaa-gold);"></i>
                         Stock à réapprovisionner
                     </h5>
                     <a href="{{ route('stock.articles') }}" class="btn btn-sm btn-outline-warning rounded-pill px-3">Gérer stock</a>
@@ -523,7 +523,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <h5 class="section-title">
-                <i class="bi bi-lightning-charge" style="color: var(--prowise-gold);"></i>
+                <i class="bi bi-lightning-charge" style="color: var(--sanaa-gold);"></i>
                 Actions rapides
             </h5>
             <div class="d-flex flex-wrap gap-2">

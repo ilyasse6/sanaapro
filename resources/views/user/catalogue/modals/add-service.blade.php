@@ -1,16 +1,19 @@
 <div class="modal fade" id="modalAddService" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header bg-catalogue">
                 <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Ajouter une prestation / produit</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form action="{{ route('catalogue.store.service') }}" method="post">
+            <form action="{{ route('catalogue.store.service') }}" method="post" enctype="multipart/form-data" class="d-flex flex-column overflow-hidden">
                 @csrf
                 <div class="modal-body">
+                    @if($errors->has('image') || $errors->has('image_upload'))
+                        <div class="alert alert-danger py-2">{{ $errors->first('image') ?: $errors->first('image_upload') }}</div>
+                    @endif
                     <div class="mb-3">
                         <label class="form-label">Nom <span class="text-danger">*</span></label>
-                        <input type="text" name="nom" class="form-control modern-input" required maxlength="255" value="{{ old('nom') }}" placeholder="Ex : Lit médical électrique">
+                        <input type="text" name="nom" class="form-control modern-input" required maxlength="255" value="{{ old('nom') }}" placeholder="Ex : Fenêtre coulissante 2 vantaux série 2600L">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Description</label>
@@ -25,6 +28,9 @@
                             <label class="form-label">Réduction (%)</label>
                             <input type="number" name="reduction" class="form-control modern-input" min="0" max="100" step="0.01" value="{{ old('reduction', 0) }}">
                         </div>
+                    </div>
+                    <div class="mt-3">
+                        @include('user.catalogue.partials.image-picker', ['actuelle' => old('image')])
                     </div>
                 </div>
                 <div class="modal-footer">

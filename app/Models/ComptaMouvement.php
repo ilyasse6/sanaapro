@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Concerns\BelongsToEntreprise;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ComptaMouvement extends Model
 {
@@ -39,6 +40,11 @@ class ComptaMouvement extends Model
     public function employe(): BelongsTo
     {
         return $this->belongsTo(Employe::class);
+    }
+
+    public function cheque(): HasOne
+    {
+        return $this->hasOne(Cheque::class);
     }
 
     public function getTypeLabelAttribute(): string

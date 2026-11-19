@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AlertesController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ChequeController;
 use App\Http\Controllers\ComptaController;
+use App\Http\Controllers\CreditClientController;
 // use App\Http\Controllers\UserDroitController;
 use App\Http\Controllers\DiagnosticController;
 use App\Http\Controllers\EmployeController;
@@ -127,6 +129,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/factures/{facture}/duplicate', [FactureController::class, 'duplicate'])->name('factures.duplicate');
     Route::get('/factures/{facture}/pdf', [FactureController::class, 'pdf'])->name('factures.pdf');
     Route::post('/factures/{facture}/statut', [FactureController::class, 'updateStatut'])->name('factures.update-statut');
+    Route::post('/factures/{facture}/repartir', [FactureController::class, 'repartir'])->name('factures.repartir');
     Route::get('/factures/{facture}', [FactureController::class, 'show'])->name('factures.show');
     Route::post('/factures/{id}/desactivate', [FactureController::class, 'desactivate'])->name('factures.desactivate');
     //---------------------------------------------------------------------------------------------------------------------------------
@@ -171,6 +174,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/compta', [ComptaController::class, 'index'])->name('compta.index');
     Route::get('/compta/mouvements', [ComptaController::class, 'mouvements'])->name('compta.mouvements');
     Route::post('/compta/mouvements', [ComptaController::class, 'storeMouvement'])->name('compta.mouvements.store');
+    //---------------------------------------------------------------------------------------------------------------------------------
+    Route::get('/credits', [CreditClientController::class, 'index'])->name('credits.index');
+    Route::get('/credits/clients/{client}', [CreditClientController::class, 'show'])->name('credits.show');
+    Route::post('/credits/clients/{client}/reglements', [CreditClientController::class, 'storeReglement'])->name('credits.reglements.store');
+    Route::delete('/credits/reglements/{mouvement}', [CreditClientController::class, 'destroyReglement'])->name('credits.reglements.destroy');
+    Route::put('/credits/clients/{client}/credit-initial', [CreditClientController::class, 'updateCreditInitial'])->name('credits.credit-initial');
+    Route::get('/cheques', [ChequeController::class, 'index'])->name('cheques.index');
+    Route::post('/cheques', [ChequeController::class, 'store'])->name('cheques.store');
+    Route::post('/cheques/{cheque}/action', [ChequeController::class, 'action'])->name('cheques.action');
     //---------------------------------------------------------------------------------------------------------------------------------
     Route::get('/employes', [EmployeController::class, 'index'])->name('employes.index');
     Route::get('/employes/create', [EmployeController::class, 'create'])->name('employes.create');

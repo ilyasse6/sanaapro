@@ -231,6 +231,7 @@
 
             total = arrondi(total);
             hidden.value = JSON.stringify(sauvegarde);
+            row.dataset.puAvant = coches > 0 ? arrondi(totalSansMarge) : '';
 
             const resumeMarge = panel.querySelector('.calc-pu-marge');
             resumeMarge.hidden = !(margeCochee && coefMarge !== 1);

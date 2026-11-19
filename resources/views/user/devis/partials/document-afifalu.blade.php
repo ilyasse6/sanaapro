@@ -26,6 +26,7 @@
 
     $dvClient = $devi->client ? trim($devi->client->nom.($devi->client->prenom ? ' – '.$devi->client->prenom : '')) : '';
     $dvObjet = trim((string) $devi->objet);
+    $dvTitreLignes = trim((string) $devi->titre_lignes);
     $dvTaux = rtrim(rtrim(number_format((float) $devi->taux_tva, 2, ',', ''), '0'), ',');
 
     $dvImage = function ($ligne) use ($dvPdf) {
@@ -74,6 +75,7 @@
     .dv-td-type img { max-width: 62%; max-height: 54px; }
     .dv-td-num { position: absolute; left: 4px; bottom: 1px; font-weight: bold; font-size: 10px; }
     .dv-td-desig { font-style: italic; line-height: 1.35; }
+    .dv-td-titre { font-weight: bold; text-align: center; }
     .dv-td-qte { font-weight: bold; font-style: italic; vertical-align: middle !important; text-align: center; }
     .dv-td-money { text-align: right; white-space: nowrap; }
     .dv-row-spacer td { height: 24px; }
@@ -111,12 +113,22 @@
     .dv-page span { font-weight: inherit; font-style: inherit; }
     .dv-page .dv-td-num { font-weight: bold !important; font-size: 10px !important; }
     .dv-table th, .dv-table td { background: transparent !important; }
+    .dv-print-layout { width: 100%; border-collapse: collapse; }
+    .dv-print-layout > thead > tr > td, .dv-print-layout > tbody > tr > td, .dv-print-layout > tfoot > tr > td { padding: 0; border: 0; }
+    .dv-print-space, .dv-band-print { display: none; }
     @@media print {
         @@page { size: A4; margin: 0; }
         .dv-stage { overflow: visible; }
         .dv-scale { transform: none !important; width: auto !important; height: auto !important; margin: 0 !important; }
-        .dv-stage .dv-page { box-shadow: none; min-height: 1122px; }
+        .dv-stage .dv-page { box-shadow: none; min-height: 0; padding: 0 22px; overflow: visible; display: block; background: none; }
         .dv-page { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        {{-- Les espaces du thead/tfoot se répètent sur chaque feuille : ils réservent la place du haut et du pied de page fixe. --}}
+        .dv-print-space { display: block; }
+        .dv-print-space-top { height: 42px; }
+        .dv-print-space-bottom { height: 130px; }
+        .dv-page > .dv-band-print { display: block; position: fixed !important; left: 0; top: 0; bottom: 0; width: 150px; background: #f2f2f2; z-index: 0 !important; }
+        .dv-page > .dv-deco { position: fixed; right: 0; bottom: 0; }
+        .dv-page > .dv-foot { position: fixed !important; left: 22px; right: 22px; bottom: 26px; margin: 0; padding: 0; }
     }
 @endif
 </style>
@@ -153,6 +165,11 @@
         <polygon points="160,74 232,126 250,470 196,470" fill="url(#dvG3)"/>
         <polygon points="216,60 250,84 250,470 238,470" fill="url(#dvG1)"/>
     </svg>
+    <div class="dv-band-print"></div>
+    <table class="dv-print-layout">
+        <thead><tr><td><div class="dv-print-space dv-print-space-top"></div></td></tr></thead>
+        <tfoot><tr><td><div class="dv-print-space dv-print-space-bottom"></div></td></tr></tfoot>
+        <tbody><tr><td>
 @else
     <div class="dv-band"></div>
     <img class="dv-deco" src="{{ $dvDeco }}" alt="">
@@ -204,6 +221,13 @@
             </tr>
         </thead>
         <tbody>
+            @if($dvTitreLignes !== '')
+                <tr>
+                    <td class="dv-td-type"></td>
+                    <td class="dv-td-desig dv-td-titre">{!! nl2br(e($dvTitreLignes)) !!}</td>
+                    <td></td><td></td><td></td><td></td><td></td>
+                </tr>
+            @endif
             @forelse($devi->lignes as $i => $ligne)
                 @php $dvImg = $dvImage($ligne); @endphp
                 <tr>
@@ -218,7 +242,8 @@
             @empty
                 <tr><td colspan="7" class="dv-empty">Aucune ligne</td></tr>
             @endforelse
-            <tr class="dv-row-spacer"><td colspan="2"></td><td colspan="2"></td><td colspan="3"></td></tr>
+            @php $dvTotalQte = (float) $devi->lignes->sum('quantite'); @endphp
+            <tr class="dv-row-spacer"><td colspan="2"></td><td colspan="2"></td><td class="dv-td-qte">{{ $dvTotalQte ? $dvQte($dvTotalQte) : '' }}</td><td colspan="2"></td></tr>
             <tr class="dv-row-total">
                 <td colspan="2" class="dv-total-label">MONTANT TOTAL HT</td>
                 <td colspan="2"></td>
@@ -238,6 +263,8 @@
     </table>
 
 @if(!$dvPdf)
+        </td></tr></tbody>
+    </table>
     <div class="dv-foot">
         <div class="dv-foot-rule"></div>
         <div class="dv-foot-text">{!! nl2br(e($dvPied)) !!}</div>
