@@ -1198,7 +1198,7 @@ D’autres vestiges sont présents :
 - menu Participants commenté ;
 - liens Activités/Staff ou Normes sans module complet ;
 - vues historiques qui ne sont plus reliées au parcours principal ;
-- identité partagée entre les noms TadbirPro et Prowise.
+- identité partagée entre les noms TadbirPro et SanaaPro.
 
 Enfin, les vues de postes sont rangées dans un dossier `Poste` avec une majuscule alors que certains appels utilisent `poste`. Cela peut fonctionner sur macOS mais échouer sur un serveur Linux sensible à la casse.
 
@@ -1338,7 +1338,7 @@ Ses points forts actuels sont :
 - le suivi des marchés et cautions ;
 - le tableau de bord spécifique au Comptable ;
 - la disponibilité d’une API ;
-- une interface adaptée à la marque Prowise.
+- une interface adaptée à la marque SanaaPro.
 
 Ses principaux axes de consolidation sont :
 

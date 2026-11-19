@@ -1,4 +1,4 @@
-# Descriptif du projet — Prowise / plateforme de gestion commerciale et opérationnelle
+# Descriptif du projet — SanaaPro / plateforme de gestion commerciale et opérationnelle
 
 Ce document présente la **vision cible** du projet (alignée sur le cahier des charges fonctionnel « caution » et vos besoins métiers), l’**état actuel** de l’application Laravel existante, et les **améliorations et rectifications recommandées** pour la rendre pleinement fonctionnelle.
 
@@ -21,7 +21,7 @@ L’application vise des **sociétés du secteur privé ou public** qui gèrent 
 - le **suivi géographique** des déplacements (carte, trajet, kilométrage, budget carburant, consommation) ;
 - la **gestion des marchés** et des **cautions** (appels d’offres, lots, documents, garanties), en cohérence avec le cahier des charges caution.
 
-Le positionnement produit est celui d’une **ERP / suite de gestion** modulaire, avec une identité visuelle actuelle **Prowise** (bleu foncé / or).
+Le positionnement produit est celui d’une **ERP / suite de gestion** modulaire, avec une identité visuelle actuelle **SanaaPro** (bleu foncé / or).
 
 ---
 
@@ -149,7 +149,7 @@ Fonctions attendues :
 
 1. **Menu** : regrouper par domaines (Commercial, Opérations, Finance, RH, Marchés).
 2. **Dashboard** : widgets par module (échéances cautions, stock bas, factures impayées).
-3. Unifier le **thème Prowise** sur tous les écrans encore hérités de l’ancien métier.
+3. Unifier le **thème SanaaPro** sur tous les écrans encore hérités de l’ancien métier.
 
 ### 4.4 Juridique et exploitation
 

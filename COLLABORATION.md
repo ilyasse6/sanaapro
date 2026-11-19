@@ -1,4 +1,4 @@
-# Collaboration — Projet Company (Prowise)
+# Collaboration — Projet Company (SanaaPro)
 
 Ce document explique comment travailler à deux sur ce projet avec GitHub.
 
@@ -19,7 +19,7 @@ git remote add origin https://github.com/ilyasse6/company.git
 
 # 3. Tout ajouter, committer, pousser
 git add .
-git commit -m "Initial commit - Projet Prowise"
+git commit -m "Initial commit - Projet SanaaPro"
 git branch -M main
 git push -u origin main
 ```
